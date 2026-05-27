@@ -1,334 +1,1284 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Moderno</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="dash.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Djota Sports — Dashboard</title>
+
+<!-- ═══ GOOGLE IDENTITY SERVICES (Login com Google) ═══ -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<!-- ═══ ÍCONES E FONTES ═══ -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ══════════════════════════════════════════════
+     DESIGN TOKENS — tema escuro
+  ══════════════════════════════════════════════ */
+  :root {
+    --bg:        #080c14;
+    --surface:   #0d1423;
+    --card:      #111827;
+    --border:    #1e2d45;
+    --border2:   #243352;
+    --txt:       #e8edf5;
+    --muted:     #4a6080;
+    --accent:    #2563eb;
+    --accent2:   #7c3aed;
+    --green:     #059669;
+    --red:       #dc2626;
+    --amber:     #d97706;
+    --cyan:      #0891b2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--txt);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  h1,h2,h3,.font-display { font-family: 'Syne', sans-serif; }
+
+  /* ══════════════════════════════════════════════
+     TELA DE LOGIN
+  ══════════════════════════════════════════════ */
+  #login-screen {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+    transition: opacity .3s ease;
+  }
+  #login-screen.hidden { opacity: 0; pointer-events: none; }
+
+  .login-card {
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 48px 44px;
+    width: min(92vw, 420px);
+    text-align: center;
+    animation: slideUp .4s ease both;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .login-logo {
+    width: 60px; height: 60px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 26px;
+    box-shadow: 0 6px 28px rgba(37,99,235,.45);
+  }
+  .login-card h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800; color: var(--txt);
+    margin-bottom: 6px;
+    background: linear-gradient(90deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .login-card p {
+    font-size: 13.5px; color: var(--muted);
+    margin-bottom: 32px; line-height: 1.6;
+  }
+  #g_id_signin { display: flex; justify-content: center; }
+
+  #login-error {
+    font-size: 13px; color: #f87171;
+    background: rgba(220,38,38,.12);
+    border: 1px solid rgba(220,38,38,.3);
+    border-radius: 10px;
+    padding: 11px 16px;
+    margin-top: 16px;
+    display: none;
+    text-align: left;
+  }
+
+  /* ══════════════════════════════════════════════
+     LOADER (spinner pós-login)
+  ══════════════════════════════════════════════ */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9998;
+    transition: opacity .3s;
+  }
+  #loader.hidden { opacity: 0; pointer-events: none; }
+  .spin-ring {
+    width: 34px; height: 34px;
+    border: 3px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ══════════════════════════════════════════════
+     APP SHELL
+  ══════════════════════════════════════════════ */
+  #app { display: none; }
+  #app.visible { display: block; }
+
+  /* ── LAYOUT ───────────────────────────────── */
+  .shell { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ──────────────────────────────── */
+  .sidebar {
+    width: 240px; flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 50;
+  }
+  .logo-wrap {
+    padding: 28px 22px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 20px rgba(37,99,235,.4);
+  }
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 14px;
+    letter-spacing: .12em;
+    background: linear-gradient(90deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .logo-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  nav { padding: 16px 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .nav-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    border: 1px solid transparent; background: none;
+    color: var(--muted); cursor: pointer;
+    transition: all .2s; width: 100%; text-align: left;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,.04); color: var(--txt); }
+  .nav-btn.active {
+    background: linear-gradient(135deg, rgba(37,99,235,.15), rgba(124,58,237,.12));
+    border-color: rgba(37,99,235,.35);
+    color: #93c5fd;
+  }
+  .nav-btn .icon { width: 18px; text-align: center; font-size: 14px; }
+
+  /* Usuário logado na sidebar */
+  .sidebar-user {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .sidebar-user:hover { background: rgba(255,255,255,.03); }
+  .user-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+    flex-shrink: 0; overflow: hidden;
+  }
+  .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .user-name  { font-size: 12.5px; font-weight: 600; color: var(--txt); line-height: 1.3; }
+  .user-email { font-size: 10.5px; color: var(--muted); }
+  .user-signout { font-size: 10px; color: #f87171; margin-top: 1px; }
+
+  /* Sync footer */
+  .sync-footer {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .sync-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green); display: inline-block;
+    animation: blink 2s infinite;
+  }
+  .sync-dot.err { background: var(--red); animation: none; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .btn-sync {
+    width: 100%; margin-top: 10px; padding: 8px;
+    background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.3);
+    border-radius: 7px; color: #93c5fd;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all .2s; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-sync:hover { background: rgba(37,99,235,.2); }
+
+  /* ── PROGRESS BAR TOPO ────────────────────── */
+  #topBar {
+    position: fixed; top: 0; left: 240px; right: 0; height: 2px; z-index: 100;
+    background: transparent;
+  }
+  #topBarFill {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #7c3aed, #2563eb);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+    transition: width 1s linear;
+  }
+  @keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+  /* ── MAIN CONTENT ─────────────────────────── */
+  .main { margin-left: 240px; flex: 1; padding: 40px 36px; }
+  .page-title { font-size: 30px; font-weight: 800; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+  /* ── STAT CARDS ───────────────────────────── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px; margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px;
+    position: relative; overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.4); }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .sc-blue::before  { background: linear-gradient(90deg,#2563eb,#60a5fa); }
+  .sc-green::before { background: linear-gradient(90deg,#059669,#34d399); }
+  .sc-red::before   { background: linear-gradient(90deg,#dc2626,#f87171); }
+  .sc-amber::before { background: linear-gradient(90deg,#d97706,#fbbf24); }
+  .sc-purple::before{ background: linear-gradient(90deg,#7c3aed,#a78bfa); }
+
+  .sc-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; }
+  .sc-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin: 10px 0 6px; }
+  .sc-sub   { font-size: 11px; color: var(--muted); }
+  .sc-icon  {
+    position: absolute; right: 20px; top: 22px;
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+  }
+
+  /* ── PANELS ROW ───────────────────────────── */
+  .row2 { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 22px; border-bottom: 1px solid var(--border);
+  }
+  .panel-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+
+  /* ── TABLE ────────────────────────────────── */
+  .tbl { width: 100%; border-collapse: collapse; }
+  .tbl th {
+    padding: 12px 16px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .1em;
+    color: var(--muted); background: rgba(255,255,255,.02);
+    border-bottom: 1px solid var(--border);
+  }
+  .tbl td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid rgba(30,45,69,.6); }
+  .tbl tbody tr { transition: background .15s; }
+  .tbl tbody tr:hover { background: rgba(255,255,255,.025); }
+  .tbl tbody tr:last-child td { border-bottom: none; }
+
+  /* ── BADGES ───────────────────────────────── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green  { background: rgba(5,150,105,.15); color: #34d399; border: 1px solid rgba(5,150,105,.3); }
+  .badge-red    { background: rgba(220,38,38,.15);  color: #f87171; border: 1px solid rgba(220,38,38,.3); }
+  .badge-amber  { background: rgba(217,119,6,.15);  color: #fbbf24; border: 1px solid rgba(217,119,6,.3); }
+  .badge-blue   { background: rgba(37,99,235,.15);  color: #93c5fd; border: 1px solid rgba(37,99,235,.3); }
+  .badge-muted  { background: rgba(74,96,128,.15);  color: var(--muted); border: 1px solid rgba(74,96,128,.3); }
+
+  .size-chip {
+    display: inline-block; padding: 3px 9px;
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 6px; font-size: 11px; font-weight: 700; color: var(--txt);
+  }
+
+  /* ── PROGRESS BAR (tabela) ────────────────── */
+  .pbar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 5px; }
+  .pbar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+
+  /* ── CHART BARS ───────────────────────────── */
+  .chart-row { margin-bottom: 14px; }
+  .chart-label { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; }
+  .chart-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .chart-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+
+  /* ── BUTTONS ──────────────────────────────── */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    border: none; color: white; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all .2s; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary:hover { box-shadow: 0 4px 20px rgba(37,99,235,.5); transform: translateY(-1px); }
+  .btn-icon {
+    padding: 6px 10px; border-radius: 7px;
+    background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.25);
+    color: #93c5fd; font-size: 12px; cursor: pointer;
+    transition: all .2s; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-icon:hover { background: rgba(37,99,235,.22); }
+
+  /* ── SEARCH / FILTER ──────────────────────── */
+  .search-box {
+    position: relative; display: inline-flex; align-items: center;
+  }
+  .search-box i { position: absolute; left: 11px; color: var(--muted); font-size: 12px; }
+  .search-box input {
+    padding: 7px 12px 7px 32px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--txt);
+    font-size: 13px; outline: none; font-family: 'DM Sans', sans-serif;
+    transition: border-color .2s;
+  }
+  .search-box input:focus { border-color: var(--accent); }
+  .search-box input::placeholder { color: var(--muted); }
+
+  /* ── MODAL ────────────────────────────────── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
+    z-index: 200; display: none;
+    align-items: center; justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .modal-box {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 18px; padding: 30px;
+    width: min(92vw, 480px);
+    animation: slideUp .25s ease;
+  }
+  .modal-box.sm { max-width: 400px; }
+  .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; line-height: 1; }
+  .modal-close:hover { color: var(--txt); }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .field input, .field select {
+    padding: 10px 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 9px; color: var(--txt);
+    font-size: 14px; outline: none; font-family: 'DM Sans', sans-serif;
+    transition: border-color .2s;
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+  .field select option { background: var(--surface); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+  .btn-cancel {
+    flex: 1; padding: 11px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    border-radius: 9px; color: var(--muted); font-size: 14px;
+    font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: background .2s;
+  }
+  .btn-cancel:hover { background: rgba(255,255,255,.08); }
+  .btn-confirm {
+    flex: 2; padding: 11px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    border: none; border-radius: 9px;
+    color: white; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all .2s;
+  }
+  .btn-confirm:hover { box-shadow: 0 4px 20px rgba(37,99,235,.4); }
+  .btn-confirm:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* ── TOAST ────────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 14px 18px;
+    z-index: 300; min-width: 270px;
+    display: none; align-items: center; gap: 12px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.5);
+    animation: slideRight .3s ease;
+  }
+  #toast.show { display: flex; }
+  @keyframes slideRight { from{transform:translateX(60px);opacity:0} to{transform:translateX(0);opacity:1} }
+  #toastIcon { font-size: 18px; }
+  #toastTitle { font-size: 13px; font-weight: 700; color: var(--txt); }
+  #toastMsg   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ── EMPTY STATE ──────────────────────────── */
+  .empty-state {
+    text-align: center; padding: 48px 20px; color: var(--muted);
+  }
+  .spinner-icon { font-size: 22px; display: block; margin-bottom: 10px; }
+
+  /* ── SCROLLBAR ────────────────────────────── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* ── RESPONSIVE ───────────────────────────── */
+  @media (max-width: 900px) {
+    .row2 { grid-template-columns: 1fr; }
+    .main { padding: 24px 16px; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-left">
-                <a class="back-portfolio" href="../index.html" aria-label="Voltar ao Portfolio">←</a>
-                <div>
-                    <h1><i class="fas fa-chart-line"></i> Dashboard</h1>
-                </div>
-            </div>
-            <div class="header-info">
-                <div class="date-time">
-                    <p id="datetime"></p>
-                </div>
-                <div class="user-menu">
-                    <a class="user-button" href="../usuario.html">
-                        <span id="dashboardAvatar" class="avatar">JG</span>
-                        <span id="dashboardUserName" class="user-name">João Gabriel</span>
-                    </a>
-                </div>
-            </div>
-        </div>
 
-        <!-- KPI Cards -->
-        <div class="cards-grid">
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
-                <div id="card-receita-titulo" class="card-title">Receita Total</div>
-                <div id="card-receita-valor" class="card-value">R$ 0,00</div>
-                <div id="card-receita-growth" class="card-growth"></div>
-            </div>
+<!-- ═══════════════════════════════════════════════════
+     TELA DE LOGIN (aparece antes do app)
+════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <i class="fa-solid fa-shirt" style="color:white; font-size:24px;"></i>
+    </div>
+    <h1>Djota Sports</h1>
+    <p>Sistema de Gestão da Loja. Faça login com sua conta Google autorizada para continuar.</p>
 
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
-                <div class="card-title">Lucro</div>
-                <div id="card-lucro-valor" class="card-value">R$ 0,00</div>
-                <div id="card-lucro-growth" class="card-growth"></div>
-            </div>
-
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-boxes"></i></div>
-                <div class="card-title">CAMISETAS RESTANTES</div>
-                <div id="card-estoque-restante-valor" class="card-value">0</div>
-                <div id="card-estoque-growth" class="card-growth"></div>
-            </div>
-
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-shopping-cart"></i></div>
-                <div class="card-title">Vendas</div>
-                <div id="card-vendas-valor" class="card-value">0</div>
-                <div id="card-vendas-growth" class="card-growth"></div>
-            </div>
-        </div>
-
-        <!-- Charts Grid -->
-        <div class="charts-grid">
-            <!-- Bar Chart -->
-            <div class="chart-container">
-                <h3 id="chartTitle" class="chart-title">Vendas por Estoque</h3>
-                <div class="bar-chart">
-                    <div id="barra-amarela" class="bar">
-                        <span class="bar-value">0</span>
-                        <span class="bar-label">AMARELA</span>
-                    </div>
-                    <div id="barra-azul" class="bar">
-                        <span class="bar-value">0</span>
-                        <span class="bar-label">AZUL</span>
-                    </div>
-                    <div id="barra-amar-fem" class="bar">
-                        <span class="bar-value">0</span>
-                        <span class="bar-label">AMAR.FEM</span>
-                    </div>
-                    <div id="barra-azul-fem" class="bar">
-                        <span class="bar-value">0</span>
-                        <span class="bar-label">AZUL.FEM</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Progress Chart -->
-            <div class="chart-container">
-                <h3 class="chart-title">Progresso de Metas</h3>
-
-                <div id="progresso-amarela" class="progress-item">
-                    <div class="progress-label">
-                        <span class="progress-name">AMARELA</span>
-                        <span class="progress-percent">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <div id="progresso-azul" class="progress-item">
-                    <div class="progress-label">
-                        <span class="progress-name">AZUL</span>
-                        <span class="progress-percent">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <div id="progresso-amar-fem" class="progress-item">
-                    <div class="progress-label">
-                        <span class="progress-name">AMAR.FEM</span>
-                        <span class="progress-percent">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <div id="progresso-azul-fem" class="progress-item">
-                    <div class="progress-label">
-                        <span class="progress-name">AZUL.FEM</span>
-                        <span class="progress-percent">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activity Table -->
-        <div class="table-container">
-            <h3 class="chart-title">Atividade Recente</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Pedido</th>
-                        <th>Cliente</th>
-                        <th>Data</th>
-                        <th>Valor</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="recentActivityBody"></tbody>
-            </table>
-        </div>
-
+    <!-- Botão oficial do Google -->
+    <div id="g_id_onload"
+      data-client_id="483232665914-efu3c5mvsnu8dh4acp6guq6lk4ku1kce.apps.googleusercontent.com"
+      data-callback="handleCredentialResponse"
+      data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+      data-type="standard"
+      data-size="large"
+      data-theme="filled_black"
+      data-text="signin_with"
+      data-shape="rectangular"
+      data-locale="pt-BR">
     </div>
 
-                    <script>
-function updateDateTime() {
-    const now = new Date();
-    const options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    };
-    const datetime = document.getElementById("datetime");
-    if (datetime) {
-        datetime.textContent = now.toLocaleDateString("pt-BR", options);
-    }
-}
+    <div id="login-error">
+      <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i>
+      Esta conta não tem permissão de acesso. Peça ao administrador para adicionar seu e-mail à lista de usuários.
+    </div>
+  </div>
+</div>
 
-function applySavedMode() {
-    const saved = localStorage.getItem("darkMode");
-    if (saved === "on") {
-        document.body.classList.add("dark-mode");
-    } else {
-        document.body.classList.remove("dark-mode");
-    }
-}
+<!-- ═══ LOADER (exibido enquanto carrega dados pós-login) ═══ -->
+<div id="loader" class="hidden">
+  <div class="spin-ring"></div>
+</div>
 
-function formatInitials(fullName) {
-    const parts = fullName.trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) return "??";
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
+<!-- ═══════════════════════════════════════════════════
+     APP PRINCIPAL (oculto até login)
+════════════════════════════════════════════════════ -->
+<div id="app">
 
-function applyStoredProfile() {
-    const name = localStorage.getItem("profileName") || "João Gabriel";
-    const avatar = document.getElementById("dashboardAvatar");
-    const nameEl = document.getElementById("dashboardUserName");
-    if (avatar) avatar.textContent = formatInitials(name);
-    if (nameEl) nameEl.textContent = name.length > 30 ? name.slice(0, 30) + "…" : name;
-}
+  <!-- Barra de progresso countdown -->
+  <div id="topBar"><div id="topBarFill" style="width:100%"></div></div>
 
-window.onload = async function carregarDadosDashboard() {
-    updateDateTime();
-    applySavedMode();
-    applyStoredProfile();
+  <!-- ═══ SIDEBAR ═══════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="logo-wrap">
+      <div class="logo-icon">
+        <i class="fa-solid fa-shirt" style="color:white;font-size:17px;"></i>
+      </div>
+      <div class="logo-name">DJOTA SPORTS</div>
+      <div class="logo-sub">Sistema de Gestão</div>
+    </div>
 
-    try {
-        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMzFzlSDwUT0Q9s-rnZiRWW0VIz5W09lz6qm_vE_nCIybGKQ9UTXbkA_F9deydKymZ4_5dzcCixJPI/pub?output=csvhttps://docs.google.com/spreadsheets/d/1Bf2g-DqZ_2Bf8zFAL3GvAWhVco7X6m55H8wV8bTz5Yk/gviz/tq?tqx=out:csv&sheet=Dados_Dashboard';
-        const resposta = await fetch(url);
-        const textoCSV = await resposta.text();
-        
-        // Quebra as linhas limpando retornos de carro
-        const linhas = textoCSV.split(/\r?\n/);
-        
-        const estoque = {
-            'AMARELA': { total: 0, vendido: 0 },
-            'AZUL': { total: 0, vendido: 0 },
-            'AMAR.FEM': { total: 0, vendido: 0 },
-            'AZUL.FEM': { total: 0, vendido: 0 }
-        };
-        
-        let blocoAtual = null;
-        const tabelaClientesBody = document.getElementById('recentActivityBody');
-        if (tabelaClientesBody) tabelaClientesBody.innerHTML = '';
+    <nav>
+      <button class="nav-btn active" id="btn-painel" onclick="trocarAba('painel')">
+        <i class="fa-solid fa-chart-pie icon"></i> Painel Geral
+      </button>
+      <button class="nav-btn" id="btn-inventario" onclick="trocarAba('inventario')">
+        <i class="fa-solid fa-warehouse icon"></i> Inventário
+      </button>
+    </nav>
 
-        for (let i = 0; i < linhas.length; i++) {
-            let linha = linhas[i].trim();
-            if (!linha) continue;
+    <!-- Usuário logado -->
+    <div class="sidebar-user" onclick="fazerLogout()" title="Clique para sair">
+      <div class="user-avatar" id="userAvatarWrap">
+        <span id="userInitials">?</span>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div class="user-name" id="userNameDisplay">—</div>
+        <div class="user-email" id="userEmailDisplay" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;"></div>
+        <div class="user-signout">Sair da conta</div>
+      </div>
+    </div>
 
-            // Divide por vírgula considerando possíveis aspas do Sheets
-            let colunas = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            // Limpa as aspas de todas as células de forma robusta
-            let dados = colunas.map(c => c.replace(/^"|"$/g, '').trim());
+    <!-- Sync info -->
+    <div class="sync-footer">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">
+        <span class="sync-dot" id="syncDot"></span>
+        <span style="font-size:12px;color:var(--muted);">Sincronização ativa</span>
+      </div>
+      <div id="lastSync" style="font-size:11px;color:var(--muted);margin-bottom:6px;">Carregando...</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:10px;color:var(--muted);">Próxima atualização</span>
+        <span id="countdownText" style="font-size:10px;color:#93c5fd;font-weight:700;">60s</span>
+      </div>
+      <button class="btn-sync" onclick="carregarDashboard()">
+        <i class="fa-solid fa-rotate-right"></i> Sincronizar Agora
+      </button>
+    </div>
+  </aside>
 
-            // 1. FINANCEIRO (Busca dinâmica por texto em qualquer coluna)
-            dados.forEach((celula, idx) => {
-                if (celula.includes("Total Recebido") && dados[idx + 1]) {
-                    faturamento = parseFloat(dados[idx + 1].replace(/\./g, '').replace(',', '.')) || 0;
-                }
-                if (celula.includes("Lucro") && dados[idx + 1]) {
-                    lucro = parseFloat(dados[idx + 1].replace(/\./g, '').replace(',', '.')) || 0;
-                }
-            });
+  <!-- ═══ PAINEL GERAL ═════════════════════════════════ -->
+  <div class="main" id="conteudo-painel">
+    <h2 class="page-title">Painel Geral</h2>
+    <p class="page-sub">Visão financeira e fluxo de lançamentos da loja.</p>
 
-            // 2. ESTOQUE (Busca nas colunas centrais)
-            for (let j = 0; j < dados.length; j++) {
-                let valorCaixaalta = dados[j].toUpperCase();
-                if (['AMARELA', 'AZUL', 'AMAR.FEM', 'AZUL.FEM'].includes(valorCaixaalta)) {
-                    blocoAtual = valorCaixaalta;
-                }
-            }
+    <div class="cards-grid">
+      <div class="stat-card sc-blue">
+        <div class="sc-icon" style="background:rgba(37,99,235,.12);">
+          <i class="fa-solid fa-dollar-sign" style="color:#60a5fa;"></i>
+        </div>
+        <div class="sc-label">Faturamento Total</div>
+        <div class="sc-value" id="card-receita-valor">R$ 0,00</div>
+        <div class="sc-sub">Total arrecadado em vendas</div>
+      </div>
+      <div class="stat-card sc-red" id="card-lucro-wrap">
+        <div class="sc-icon" style="background:rgba(220,38,38,.12);">
+          <i class="fa-solid fa-hand-holding-dollar" style="color:#f87171;"></i>
+        </div>
+        <div class="sc-label">Lucro Real</div>
+        <div class="sc-value" id="card-lucro-valor">R$ 0,00</div>
+        <div class="sc-sub">Receita menos custos</div>
+      </div>
+      <div class="stat-card sc-purple">
+        <div class="sc-icon" style="background:rgba(124,58,237,.12);">
+          <i class="fa-solid fa-bag-shopping" style="color:#a78bfa;"></i>
+        </div>
+        <div class="sc-label">Peças Vendidas</div>
+        <div class="sc-value" id="card-vendas-valor">0 un.</div>
+        <div class="sc-sub">Total de unidades saídas</div>
+      </div>
+      <div class="stat-card sc-amber">
+        <div class="sc-icon" style="background:rgba(217,119,6,.12);">
+          <i class="fa-solid fa-boxes-stacked" style="color:#fbbf24;"></i>
+        </div>
+        <div class="sc-label">Estoque Restante</div>
+        <div class="sc-value" id="card-estoque-resante">0 un.</div>
+        <div class="sc-sub">Unidades ainda disponíveis</div>
+      </div>
+    </div>
 
-            if (blocoAtual && ['P', 'M', 'G', 'GG'].includes(dados[4])) {
-                let qtdTotal = parseInt(dados[5]) || 0;
-                let qtdVendida = parseInt(dados[6]) || 0;
-                
-                estoque[blocoAtual].total += qtdTotal;
-                estoque[blocoAtual].vendido += qtdVendida;
-                totalVendas += qtdVendida;
-            }
+    <div class="row2">
+      <!-- Movimentações -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <i class="fa-solid fa-clock-rotate-left" style="color:#a78bfa;"></i>
+            Últimas Movimentações
+          </div>
+          <button class="btn-primary" onclick="abrirModalVenda()">
+            <i class="fa-solid fa-plus"></i> Nova Venda
+          </button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Cliente</th>
+                <th style="text-align:left;">Método</th>
+                <th style="text-align:center;">Tam</th>
+                <th style="text-align:center;">Qtd</th>
+                <th style="text-align:left;">Modelo/Cor</th>
+                <th style="text-align:right;">Valor Pago</th>
+              </tr>
+            </thead>
+            <tbody id="recentActivityBody">
+              <tr><td colspan="6" class="empty-state">
+                <i class="fa-solid fa-spinner fa-spin spinner-icon"></i>Carregando...
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-            // 3. CLIENTES ATIVIDADE RECENTE
-            if (dados[11] && i > 1 && !dados[11].includes("Cliente") && !dados[11].includes("Total") && !dados[11].includes("Lucro")) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${dados[11]}</td>
-                    <td>${dados[12] || '—'}</td>
-                    <td>${dados[13] || '—'}</td>
-                    <td>${dados[14] || '—'}</td>
-                    <td>${dados[15] || '—'}</td>
-                    <td>${dados[16] ? 'R$ ' + dados[16] : '—'}</td>
-                `;
-                if (tabelaClientesBody) tabelaClientesBody.appendChild(tr);
-            }
-        }
+      <!-- Gráfico lateral -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <i class="fa-solid fa-chart-bar" style="color:#fbbf24;"></i>
+            Vendas por Modelo
+          </div>
+        </div>
+        <div style="padding:20px;" id="salesChart">
+          <p class="empty-state" style="padding:20px 0;">Carregando...</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // CÁLCULO DE ITENS RESTANTES
-        let totalRestante = 0;
-        Object.keys(estoque).forEach(key => {
-            totalRestante += (estoque[key].total - estoque[key].vendido);
-        });
+  <!-- ═══ INVENTÁRIO ════════════════════════════════════ -->
+  <div class="main" id="conteudo-inventario" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h2 class="page-title">Inventário de Estoque</h2>
+        <p class="page-sub" style="margin-bottom:0;">
+          Clique em <i class="fa-solid fa-pen-to-square" style="color:#93c5fd;"></i> para editar e salvar direto na planilha.
+        </p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="filterInput" placeholder="Filtrar modelo..." oninput="filtrarInventario()">
+        </div>
+        <span class="badge badge-green" id="syncBadge">
+          <i class="fa-solid fa-check"></i> Sincronizado
+        </span>
+      </div>
+    </div>
 
-        // INJEÇÃO DOS VALORES FORMATADOS NOS CARDS
-        const receitaEl = document.getElementById('card-receita-valor');
-        if (receitaEl) {
-            receitaEl.textContent = `R$ ${faturamento.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        }
-        
-        const cardLucro = document.getElementById('card-lucro-valor');
-        if (cardLucro) {
-            cardLucro.textContent = `R$ ${lucro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            cardLucro.style.color = lucro < 0 ? '#ef4444' : '#10b981';
-        }
+    <div class="panel">
+      <div style="overflow-x:auto;">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="text-align:left;">Modelo / Cor</th>
+              <th style="text-align:center;">Tam</th>
+              <th style="text-align:center;">Comprado</th>
+              <th style="text-align:center;">Vendido</th>
+              <th style="text-align:center;">Estoque</th>
+              <th style="text-align:center;min-width:100px;">Ocupação</th>
+              <th style="text-align:center;">Status</th>
+              <th style="text-align:center;">Editar</th>
+            </tr>
+          </thead>
+          <tbody id="estoqueDetalhadoBody">
+            <tr><td colspan="8" class="empty-state">
+              <i class="fa-solid fa-spinner fa-spin spinner-icon"></i>Sincronizando dados...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-        const estoqueRestanteEl = document.getElementById('card-estoque-restante-valor');
-        if (estoqueRestanteEl) {
-            estoqueRestanteEl.textContent = totalRestante;
-        }
+</div><!-- /#app -->
 
-        const vendasEl = document.getElementById('card-vendas-valor');
-        if (vendasEl) {
-            vendasEl.textContent = totalVendas;
-        }
+<!-- ═══ MODAL — NOVA VENDA ════════════════════════════ -->
+<div class="overlay" id="modalVenda">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">
+        <i class="fa-solid fa-bag-shopping" style="color:#a78bfa;margin-right:8px;"></i>
+        Registrar Nova Venda
+      </div>
+      <button class="modal-close" onclick="fecharModal('modalVenda')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="field">
+        <label>Cliente</label>
+        <input type="text" id="m-cliente" placeholder="Nome do cliente">
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Modelo / Cor</label>
+          <select id="m-cor">
+            <option value="AMARELA">AMARELA</option>
+            <option value="AZUL">AZUL</option>
+            <option value="AMAR.FEM">AMAR.FEM</option>
+            <option value="AZUL.FEM">AZUL.FEM</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tamanho</label>
+          <select id="m-tamanho">
+            <option>P</option><option>M</option><option>G</option><option>GG</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Método de Pagamento</label>
+          <select id="m-metodo">
+            <option>PIX</option><option>CARTÃO</option><option>DINHEIRO</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Quantidade</label>
+          <input type="number" id="m-qtd" value="1" min="1">
+        </div>
+      </div>
+      <div class="field">
+        <label>Valor Pago (R$)</label>
+        <input type="number" id="m-valor" placeholder="0.00" step="0.01">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fecharModal('modalVenda')">Cancelar</button>
+      <button class="btn-confirm" id="btnConfirmVenda" onclick="salvarVenda()">
+        <i class="fa-solid fa-check"></i> Confirmar Venda
+      </button>
+    </div>
+  </div>
+</div>
 
-        // ATUALIZAÇÃO DO GRÁFICO VERTICAL
-        const atualizarBar = (id, valor) => {
-            const elemento = document.getElementById(id);
-            if (elemento) {
-                elemento.style.height = `${valor * 30}px`;
-                elemento.textContent = valor;
-            }
-        };
+<!-- ═══ MODAL — EDITAR ESTOQUE ══════════════════════ -->
+<div class="overlay" id="modalEstoque">
+  <div class="modal-box sm">
+    <div class="modal-head">
+      <div class="modal-title">
+        <i class="fa-solid fa-pen-to-square" style="color:#60a5fa;margin-right:8px;"></i>
+        Editar Estoque
+      </div>
+      <button class="modal-close" onclick="fecharModal('modalEstoque')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <p id="editLabel" style="font-size:15px;font-weight:700;color:#93c5fd;margin-bottom:18px;text-align:center;"></p>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="field">
+        <label>Total Comprado (entrada no estoque)</label>
+        <input type="number" id="edit-comprado" min="0">
+      </div>
+      <div class="field">
+        <label>Total Vendido (saídas confirmadas)</label>
+        <input type="number" id="edit-vendido" min="0">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fecharModal('modalEstoque')">Cancelar</button>
+      <button class="btn-confirm" id="btnConfirmEstoque" onclick="salvarEdicaoEstoque()">
+        <i class="fa-solid fa-floppy-disk"></i> Salvar na Planilha
+      </button>
+    </div>
+  </div>
+</div>
 
-        atualizarBar('barra-amarela', estoque['AMARELA'].vendido);
-        atualizarBar('barra-azul', estoque['AZUL'].vendido);
-        atualizarBar('barra-amar-fem', estoque['AMAR.FEM'].vendido);
-        atualizarBar('barra-azul-fem', estoque['AZUL.FEM'].vendido);
+<!-- ═══ TOAST ════════════════════════════════════════ -->
+<div id="toast">
+  <i id="toastIcon"></i>
+  <div><div id="toastTitle"></div><div id="toastMsg"></div></div>
+</div>
 
-        // ATUALIZAÇÃO DAS METAS HORIZONTAIS
-        const aplicarMeta = (id, vend, tot) => {
-            const pct = tot > 0 ? Math.round((vend / tot) * 100) : 0;
-            const el = document.getElementById(id);
-            if (el) {
-                el.style.width = `${pct}%`;
-                const label = el.parentElement.parentElement.querySelector('.progress-percentage');
-                if (label) label.textContent = `${pct}%`;
-            }
-        };
+<!-- ══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════════ -->
+<script>
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  ⚙️  CONFIGURAÇÃO — EDITE ESTA SEÇÃO ANTES DE USAR          ║
+// ╠══════════════════════════════════════════════════════════════╣
+// ║                                                              ║
+// ║  1. CLIENT_ID                                                ║
+// ║     → Google Cloud Console > APIs & Services > Credentials  ║
+// ║     → OAuth 2.0 Client IDs > copie o valor                  ║
+// ║     → Adicione o domínio do GitHub Pages em "Origens JS"    ║
+// ║       Ex: https://SEUNOME.github.io                         ║
+// ║                                                              ║
+// ║  2. ALLOWED_EMAILS                                           ║
+// ║     → Liste os e-mails que podem acessar o dashboard.       ║
+// ║     → Apenas contas Google (Gmail ou Google Workspace).     ║
+// ║                                                              ║
+// ║  3. APPS_SCRIPT_URL                                          ║
+// ║     → URL do seu Google Apps Script Web App                 ║
+// ║     → Deixe '' para usar apenas o CSV (somente leitura)     ║
+// ║                                                              ║
+// ║  4. CSV_URL                                                  ║
+// ║     → Arquivo > Compartilhar > Publicar na web > CSV        ║
+// ║     → Copie a URL e cole abaixo                             ║
+// ║                                                              ║
+// ╚══════════════════════════════════════════════════════════════╝
 
-        aplicarMeta('progresso-amarela', estoque['AMARELA'].vendido, estoque['AMARELA'].total);
-        aplicarMeta('progresso-azul', estoque['AZUL'].vendido, estoque['AZUL'].total);
-        aplicarMeta('progresso-amar-fem', estoque['AMAR.FEM'].vendido, estoque['AMAR.FEM'].total);
-        aplicarMeta('progresso-azul-fem', estoque['AZUL.FEM'].vendido, estoque['AZUL.FEM'].total);
+const CONFIG = {
+  CLIENT_ID: '483232665914-efu3c5mvsnu8dh4acp6guq6lk4ku1kce.apps.googleusercontent.com',
 
-    } catch (e) {
-        console.error('Erro na atualização do painel:', e);
-    }
+  // ─── E-mails autorizados (adicione todos os vendedores) ───────
+  ALLOWED_EMAILS: [
+    'joao0805.oliveira@gmail.com',
+    'dantejabbur@gmail.com',
+  ],
+
+  // ─── URL do Apps Script (leitura sem cache + escrita) ─────────
+  APPS_SCRIPT_URL: 'COLE_A_URL_DO_SEU_APPS_SCRIPT_AQUI',
+
+  // ─── URL CSV público (fallback se não tiver Apps Script) ──────
+  CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQeziQ2L-3XrZBYmfBkW6KRt8-dby34QEfH88E0pIiTX34h35Vejrp2PHrhua60Pg/pub?gid=1893955553&single=true&output=csv',
+
+  REFRESH_SEC: 60,
 };
+
+// ── Estado global ─────────────────────────────────────────────
+let dadosEstoque   = [];
+let dadosVendas    = [];
+let editando       = null;
+let countdownSec   = CONFIG.REFRESH_SEC;
+let countdownTimer = null;
+let usuarioLogado  = null;
+
+// ══════════════════════════════════════════════════════════════
+// AUTH — GOOGLE IDENTITY SERVICES
+// ══════════════════════════════════════════════════════════════
+
+/**
+ * Callback chamado pelo botão Google após o usuário fazer login.
+ * Recebe um JWT com nome, email e foto do usuário.
+ */
+function handleCredentialResponse(response) {
+  const payload = parseJWT(response.credential);
+  const email   = (payload.email || '').toLowerCase().trim();
+
+  // Verifica se o e-mail está na lista de autorizados
+  const emailsPermitidos = CONFIG.ALLOWED_EMAILS.map(e => e.toLowerCase().trim());
+  if (!emailsPermitidos.includes(email)) {
+    document.getElementById('login-error').style.display = 'block';
+    return;
+  }
+
+  // Salva dados do usuário e exibe no sidebar
+  usuarioLogado = payload;
+  atualizarInfoUsuario(payload);
+
+  // Mostra loader e carrega o dashboard
+  document.getElementById('loader').classList.remove('hidden');
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+
+  carregarDashboard();
+}
+
+/**
+ * Atualiza o bloco de usuário na sidebar.
+ */
+function atualizarInfoUsuario(payload) {
+  const nome    = payload.name  || payload.email || '—';
+  const email   = payload.email || '';
+  const initials = nome.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+
+  document.getElementById('userNameDisplay').textContent  = nome;
+  document.getElementById('userEmailDisplay').textContent = email;
+  document.getElementById('userInitials').textContent     = initials;
+
+  if (payload.picture) {
+    document.getElementById('userAvatarWrap').innerHTML =
+      `<img src="${payload.picture}" alt="avatar" referrerpolicy="no-referrer">`;
+  }
+}
+
+/**
+ * Desloga o usuário e volta para a tela de login.
+ */
+function fazerLogout() {
+  if (!confirm('Deseja realmente sair da conta?')) return;
+  clearInterval(countdownTimer);
+  usuarioLogado = null;
+  if (window.google && google.accounts && google.accounts.id) {
+    google.accounts.id.disableAutoSelect();
+  }
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('login-error').style.display = 'none';
+  // Recarrega a página para forçar o botão Google a reaparecer
+  setTimeout(() => location.reload(), 200);
+}
+
+/**
+ * Decodifica o JWT do Google (sem validação de assinatura — apenas para leitura de dados).
+ */
+function parseJWT(token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+  } catch { return {}; }
+}
+
+// ══════════════════════════════════════════════════════════════
+// NAVEGAÇÃO
+// ══════════════════════════════════════════════════════════════
+function trocarAba(aba) {
+  const isPainel = aba === 'painel';
+  document.getElementById('conteudo-painel').style.display     = isPainel ? 'block' : 'none';
+  document.getElementById('conteudo-inventario').style.display = isPainel ? 'none'  : 'block';
+  document.getElementById('btn-painel').classList.toggle('active', isPainel);
+  document.getElementById('btn-inventario').classList.toggle('active', !isPainel);
+}
+
+// ══════════════════════════════════════════════════════════════
+// CARREGAMENTO DE DADOS
+// ══════════════════════════════════════════════════════════════
+function parseCSVLine(linha) {
+  const res = []; let inQ = false, cur = '';
+  for (const c of linha) {
+    if (c === '"')                              { inQ = !inQ; }
+    else if ((c === ',' || c === ';') && !inQ) { res.push(cur.trim()); cur = ''; }
+    else                                        { cur += c; }
+  }
+  res.push(cur.trim());
+  return res;
+}
+
+async function carregarDashboard() {
+  document.getElementById('syncDot').className = 'sync-dot';
+  document.getElementById('syncBadge').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sincronizando';
+  document.getElementById('syncBadge').className = 'badge badge-blue';
+
+  try {
+    let linhas;
+    const useScript = CONFIG.APPS_SCRIPT_URL &&
+                      CONFIG.APPS_SCRIPT_URL !== 'COLE_A_URL_DO_SEU_APPS_SCRIPT_AQUI';
+
+    if (useScript) {
+      // Apps Script: leitura sem cache direto da planilha
+      const res  = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=getData&t=${Date.now()}`);
+      const text = await res.text();
+      linhas = text.split(/\r?\n/);
+    } else {
+      // Fallback: CSV público (pode ter atraso de ~5 min do Google)
+      const res  = await fetch(`${CONFIG.CSV_URL}&cache=${Date.now()}`);
+      linhas = (await res.text()).split(/\r?\n/);
+    }
+
+    processarDados(linhas);
+
+    const agora = new Date();
+    document.getElementById('lastSync').textContent =
+      `Atualizado às ${agora.toLocaleTimeString('pt-BR')}`;
+    document.getElementById('syncBadge').innerHTML  = '<i class="fa-solid fa-check"></i> Sincronizado';
+    document.getElementById('syncBadge').className  = 'badge badge-green';
+
+  } catch (e) {
+    console.error(e);
+    document.getElementById('syncDot').className    = 'sync-dot err';
+    document.getElementById('syncBadge').innerHTML  = '<i class="fa-solid fa-xmark"></i> Erro';
+    document.getElementById('syncBadge').className  = 'badge badge-red';
+    toast('Erro de sincronização', 'Não foi possível carregar os dados.', 'error');
+  }
+
+  // Esconde o loader após primeiro carregamento
+  document.getElementById('loader').classList.add('hidden');
+  reiniciarCountdown();
+}
+
+// ══════════════════════════════════════════════════════════════
+// PROCESSAMENTO DOS DADOS DA PLANILHA
+// ══════════════════════════════════════════════════════════════
+function processarDados(linhas) {
+  let faturamento = 'R$ 0,00', lucro = 'R$ 0,00';
+  let totalVendidas = 0, totalEstoque = 0;
+  let primeiraVenda = -1;
+  const salesByModel = {};
+  dadosEstoque = []; dadosVendas = [];
+
+  linhas.forEach((txt, idx) => {
+    const d = parseCSVLine(txt);
+    if (!d.length || !d[0]) return;
+    const A = d[0].toUpperCase();
+
+    if (A.includes('FATURAMENTO')) { faturamento = d[1] || 'R$ 0,00'; return; }
+    if (A.includes('LUCRO'))       { lucro = d[1] || 'R$ 0,00'; return; }
+    if (A.includes('CLIENTE'))     { primeiraVenda = idx; return; }
+
+    // Bloco de estoque (antes do cabeçalho de vendas)
+    if (idx >= 3 && primeiraVenda === -1) {
+      if (A.includes('PRODUTO') || A.includes('ESTOQUE') || A === '') return;
+
+      const comprado     = parseInt(d[2]) || 0;
+      const vendido      = parseInt(d[3]) || 0;
+      const estoqueAtual = comprado - vendido;
+
+      totalVendidas += vendido;
+      totalEstoque  += estoqueAtual;
+
+      const nomeModelo = d[0].trim();
+      const tamanho    = (d[1] || '').trim().toUpperCase();
+      dadosEstoque.push({ nomeModelo, tamanho, comprado, vendido, estoqueAtual });
+      salesByModel[nomeModelo] = (salesByModel[nomeModelo] || 0) + vendido;
+    }
+
+    // Linhas de vendas (após cabeçalho Cliente)
+    if (primeiraVenda !== -1 && idx > primeiraVenda && d.length >= 5 && d[0]) {
+      dadosVendas.push(d);
+    }
+  });
+
+  // ── Atualiza cards KPI ──
+  const fmt = v => v.includes('R$') ? v : `R$ ${v}`;
+  document.getElementById('card-receita-valor').textContent   = fmt(faturamento);
+  document.getElementById('card-vendas-valor').textContent    = `${totalVendidas} un.`;
+  document.getElementById('card-estoque-resante').textContent = `${totalEstoque} un.`;
+
+  const lucroEl  = document.getElementById('card-lucro-valor');
+  lucroEl.textContent = fmt(lucro);
+  const lucroNum = parseFloat(lucro.replace(/[R$\s.]/g,'').replace(',','.'));
+  lucroEl.style.color = lucroNum >= 0 ? '#34d399' : '#f87171';
+
+  renderizarVendas();
+  renderizarEstoque();
+  renderizarGrafico(salesByModel);
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDERIZAÇÃO
+// ══════════════════════════════════════════════════════════════
+function renderizarVendas() {
+  const tbody = document.getElementById('recentActivityBody');
+  if (!dadosVendas.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Nenhuma venda registrada.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = dadosVendas.map(d => `
+    <tr>
+      <td style="font-weight:600;">${escHtml(d[0])}</td>
+      <td><span class="badge badge-blue">${escHtml(d[1])}</span></td>
+      <td style="text-align:center;"><span class="size-chip">${escHtml(d[2])}</span></td>
+      <td style="text-align:center;color:#a78bfa;font-weight:700;">${escHtml(d[3])}</td>
+      <td style="color:var(--muted);">${escHtml(d[4])}</td>
+      <td style="text-align:right;color:#34d399;font-weight:700;">R$ ${escHtml(d[5])}</td>
+    </tr>`).join('');
+}
+
+function renderizarEstoque(filtro = '') {
+  const tbody = document.getElementById('estoqueDetalhadoBody');
+  const lista = filtro
+    ? dadosEstoque.filter(d => d.nomeModelo.toUpperCase().includes(filtro.toUpperCase()))
+    : dadosEstoque;
+
+  if (!lista.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Nenhum item encontrado.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = lista.map(d => {
+    const pct      = d.comprado > 0 ? Math.min(100, Math.round((d.vendido / d.comprado) * 100)) : 0;
+    const isAzul   = d.nomeModelo.toUpperCase().includes('AZUL');
+    const iconColor = isAzul ? '#60a5fa' : '#fbbf24';
+    const barColor  = pct >= 100 ? '#f87171' : pct >= 70 ? '#fbbf24' : '#34d399';
+
+    let badgeClass, badgeText;
+    if (d.comprado === 0)       { badgeClass = 'badge-muted'; badgeText = 'Sem entrada'; }
+    else if (d.estoqueAtual === 0) { badgeClass = 'badge-red';   badgeText = 'Esgotado'; }
+    else if (d.estoqueAtual === 1) { badgeClass = 'badge-amber'; badgeText = 'Crítico'; }
+    else                           { badgeClass = 'badge-green'; badgeText = 'Em Estoque'; }
+
+    return `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:9px;">
+          <i class="fa-solid fa-shirt" style="color:${iconColor};font-size:15px;"></i>
+          <span style="font-weight:600;">${escHtml(d.nomeModelo)}</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span class="size-chip">${escHtml(d.tamanho)}</span></td>
+      <td style="text-align:center;color:var(--muted);">${d.comprado} un</td>
+      <td style="text-align:center;color:#a78bfa;font-weight:600;">${d.vendido} un</td>
+      <td style="text-align:center;font-weight:700;color:${d.estoqueAtual===0?'#f87171':'var(--txt)'};">${d.estoqueAtual} un</td>
+      <td style="text-align:center;min-width:90px;">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">${pct}%</div>
+        <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${barColor};"></div></div>
+      </td>
+      <td style="text-align:center;"><span class="badge ${badgeClass}">${badgeText}</span></td>
+      <td style="text-align:center;">
+        <button class="btn-icon" onclick="abrirModalEstoque('${escHtml(d.nomeModelo)}','${escHtml(d.tamanho)}',${d.comprado},${d.vendido})">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderizarGrafico(byModel) {
+  const el      = document.getElementById('salesChart');
+  const entries = Object.entries(byModel).filter(([,v]) => v > 0);
+  const maxV    = Math.max(...entries.map(([,v]) => v), 1);
+  const cores   = ['#2563eb','#d97706','#059669','#7c3aed','#0891b2'];
+
+  if (!entries.length) {
+    el.innerHTML = '<p class="empty-state" style="padding:12px 0;">Nenhuma venda ainda.</p>';
+    return;
+  }
+  el.innerHTML = entries.map(([m, q], i) => `
+    <div class="chart-row">
+      <div class="chart-label">
+        <span style="color:var(--muted);font-size:12px;">${escHtml(m)}</span>
+        <span style="color:var(--txt);font-weight:700;font-size:12px;">${q} un</span>
+      </div>
+      <div class="chart-bar-bg">
+        <div class="chart-bar-fill" style="width:${Math.round((q/maxV)*100)}%;background:${cores[i%cores.length]};"></div>
+      </div>
+    </div>`).join('');
+}
+
+function filtrarInventario() {
+  renderizarEstoque(document.getElementById('filterInput').value);
+}
+
+// ══════════════════════════════════════════════════════════════
+// COUNTDOWN E SYNC
+// ══════════════════════════════════════════════════════════════
+function reiniciarCountdown() {
+  clearInterval(countdownTimer);
+  countdownSec = CONFIG.REFRESH_SEC;
+  atualizarCountdownUI();
+  countdownTimer = setInterval(() => {
+    countdownSec--;
+    atualizarCountdownUI();
+    if (countdownSec <= 0) carregarDashboard();
+  }, 1000);
+}
+
+function atualizarCountdownUI() {
+  const el  = document.getElementById('countdownText');
+  const bar = document.getElementById('topBarFill');
+  if (el)  el.textContent = `${countdownSec}s`;
+  if (bar) bar.style.width = `${(countdownSec / CONFIG.REFRESH_SEC) * 100}%`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODAIS
+// ══════════════════════════════════════════════════════════════
+function fecharModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+function abrirModalVenda() {
+  document.getElementById('modalVenda').classList.add('show');
+}
+
+async function salvarVenda() {
+  const cliente = document.getElementById('m-cliente').value.trim();
+  if (!cliente) { toast('Campo obrigatório', 'Informe o nome do cliente.', 'error'); return; }
+  if (!verificarScript()) return;
+
+  const payload = {
+    action:  'addVenda',
+    cliente,
+    cor:     document.getElementById('m-cor').value,
+    tamanho: document.getElementById('m-tamanho').value,
+    metodo:  document.getElementById('m-metodo').value,
+    qtd:     parseInt(document.getElementById('m-qtd').value) || 1,
+    valor:   parseFloat(document.getElementById('m-valor').value) || 0,
+  };
+
+  const btn = document.getElementById('btnConfirmVenda');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+  try {
+    await fetch(CONFIG.APPS_SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      body: JSON.stringify(payload),
+    });
+    await esperar(1800);
+    fecharModal('modalVenda');
+    await carregarDashboard();
+    toast('Venda registrada!',
+      `${payload.cliente} — ${payload.cor} ${payload.tamanho} — R$ ${payload.valor}`,
+      'success');
+  } catch(e) {
+    toast('Erro ao salvar', 'Verifique a URL do Apps Script.', 'error');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirmar Venda';
+}
+
+function abrirModalEstoque(produto, tamanho, comprado, vendido) {
+  editando = { produto, tamanho };
+  document.getElementById('editLabel').textContent    = `${produto}  —  ${tamanho}`;
+  document.getElementById('edit-comprado').value      = comprado;
+  document.getElementById('edit-vendido').value       = vendido;
+  document.getElementById('modalEstoque').classList.add('show');
+}
+
+async function salvarEdicaoEstoque() {
+  if (!editando) return;
+  if (!verificarScript()) return;
+
+  const payload = {
+    action:   'updateEstoque',
+    produto:  editando.produto,
+    tamanho:  editando.tamanho,
+    comprado: parseInt(document.getElementById('edit-comprado').value) || 0,
+    vendido:  parseInt(document.getElementById('edit-vendido').value)  || 0,
+  };
+
+  const btn = document.getElementById('btnConfirmEstoque');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+  try {
+    await fetch(CONFIG.APPS_SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      body: JSON.stringify(payload),
+    });
+    await esperar(1800);
+    fecharModal('modalEstoque');
+    await carregarDashboard();
+    toast('Estoque atualizado!',
+      `${editando.produto} ${editando.tamanho} salvo na planilha.`,
+      'success');
+    editando = null;
+  } catch(e) {
+    toast('Erro ao salvar', 'Verifique a URL do Apps Script.', 'error');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar na Planilha';
+}
+
+// ══════════════════════════════════════════════════════════════
+// UTILITÁRIOS
+// ══════════════════════════════════════════════════════════════
+function verificarScript() {
+  if (!CONFIG.APPS_SCRIPT_URL ||
+      CONFIG.APPS_SCRIPT_URL === 'COLE_A_URL_DO_SEU_APPS_SCRIPT_AQUI') {
+    toast('Apps Script não configurado',
+      'Configure a URL do Apps Script para habilitar edição.',
+      'error');
+    return false;
+  }
+  return true;
+}
+
+function esperar(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+let toastTimer;
+function toast(titulo, msg, tipo = 'success') {
+  const el = document.getElementById('toast');
+  const ic = document.getElementById('toastIcon');
+  document.getElementById('toastTitle').textContent = titulo;
+  document.getElementById('toastMsg').textContent   = msg;
+  ic.className   = tipo === 'error' ? 'fa-solid fa-circle-xmark' : 'fa-solid fa-circle-check';
+  ic.style.color = tipo === 'error' ? '#f87171' : '#34d399';
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 4500);
+}
+
+function escHtml(str) {
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Fechar modais clicando fora
+document.querySelectorAll('.overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('show');
+  });
+});
+
+// ══════════════════════════════════════════════════════════════
+// INIT — O loader começa oculto; tudo começa pelo login Google
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loader').classList.add('hidden');
+});
 </script>
 </body>
 </html>

@@ -1,111 +1,1912 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfólio | João Gabriel</title>
-    <link rel="stylesheet" href="index.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>djota.sports — Camisas & Materiais Esportivos</title>
+
+<!-- ═══ FONTES ═══ -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- ═══ ICONS ═══ -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- ═══ TAILWIND CDN ═══ -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          body:    ['"Barlow"', 'sans-serif'],
+        },
+        colors: {
+          brand: {
+            50:  '#fff4ee',
+            100: '#ffe4d0',
+            300: '#f9985d',
+            400: '#f47433',
+            500: '#f05a1f',
+            600: '#d94d16',
+            700: '#b83e10',
+            900: '#6a1d08',
+          },
+          navy: {
+            50:  '#f0f4fa',
+            100: '#d5e0f0',
+            500: '#1a3050',
+            700: '#0d1e36',
+            800: '#091526',
+            900: '#060e1a',
+          },
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+/* ══════════════════════════════════════════════
+   CSS BASE
+══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --brand-orange: #f05a1f;
+  --brand-orange-hover: #d94d16;
+  --brand-navy: #0d1e36;
+  --brand-navy-dark: #091526;
+  --brand-navy-light: #1a3050;
+}
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: #f4f5f8;
+  color: #0d1e36;
+  overflow-x: hidden;
+}
+
+/* ── TYPOGRAPHY ── */
+.font-display { font-family: 'Barlow Condensed', sans-serif; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #f0f0f0; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+/* ══════════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════════ */
+#navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(14px);
+  border-bottom: 2px solid #f05a1f22;
+  box-shadow: 0 2px 20px rgba(13,30,54,0.08);
+}
+
+.nav-tab {
+  position: relative;
+  padding: 0 4px 16px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a8a99;
+  cursor: pointer;
+  transition: color 0.2s;
+  border: none; background: none;
+}
+.nav-tab::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: var(--brand-orange);
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+.nav-tab.active { color: var(--brand-navy); }
+.nav-tab.active::after { transform: scaleX(1); }
+.nav-tab:hover { color: var(--brand-navy); }
+
+/* Dashboard tab especial */
+.nav-tab-dash {
+  position: relative;
+  padding: 0 4px 16px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f05a1f;
+  cursor: pointer;
+  transition: color 0.2s;
+  border: none; background: none;
+  display: flex; align-items: center; gap: 5px;
+  padding-bottom: 16px;
+}
+.nav-tab-dash:hover { color: #d94d16; }
+
+/* ══════════════════════════════════════════════
+   HERO BANNER
+══════════════════════════════════════════════ */
+.hero-pattern {
+  background-color: var(--brand-navy-dark);
+  background-image:
+    radial-gradient(ellipse at 80% 50%, rgba(240,90,31,0.12) 0%, transparent 60%),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 28px,
+      rgba(255,255,255,0.015) 28px,
+      rgba(255,255,255,0.015) 29px
+    );
+}
+
+/* ── Brasil badge ── */
+.brasil-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, rgba(240,90,31,0.2), rgba(240,90,31,0.05));
+  border: 1px solid rgba(240,90,31,0.35);
+  border-radius: 30px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f97c4a;
+  margin-bottom: 12px;
+}
+
+/* ══════════════════════════════════════════════
+   PRODUCT CARD
+══════════════════════════════════════════════ */
+.product-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  cursor: pointer;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 52px rgba(13,30,54,0.13);
+}
+
+.product-img-wrap {
+  position: relative;
+  height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+/* Cor especial para camisas do Brasil */
+.product-img-wrap.brasil-amarela {
+  background: linear-gradient(145deg, #fff8e0, #fef3b0);
+}
+.product-img-wrap.brasil-azul {
+  background: linear-gradient(145deg, #e8f0ff, #c9daff);
+}
+.product-img-wrap.brasil-amarela .shirt-img-icon { color: #ca8a04; }
+.product-img-wrap.brasil-azul .shirt-img-icon    { color: #1d4ed8; }
+
+.shirt-img-icon {
+  font-size: 90px;
+  opacity: 0.18;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.product-card:hover .shirt-img-icon {
+  transform: scale(1.09);
+  opacity: 0.26;
+}
+
+/* Faixa verde-amarela do Brasil na parte de cima do card */
+.brasil-stripe {
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+}
+.brasil-stripe.amarela {
+  background: linear-gradient(90deg, #22c55e 0%, #22c55e 50%, #eab308 50%, #eab308 100%);
+}
+.brasil-stripe.azul {
+  background: linear-gradient(90deg, #22c55e 0%, #22c55e 50%, #1d4ed8 50%, #1d4ed8 100%);
+}
+
+/* Bandeirinha BR */
+.br-flag {
+  position: absolute; bottom: 10px; right: 10px;
+  font-size: 22px;
+}
+
+.product-badge {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--brand-navy);
+  color: white;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px;
+}
+.product-badge.sold-out {
+  background: #e5e5e5; color: #888;
+}
+.product-badge.promo {
+  background: var(--brand-orange); color: #fff;
+  top: auto; bottom: 12px; left: 12px;
+}
+
+/* Cor swatch */
+.color-swatch {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #7a8a99;
+  margin-bottom: 6px;
+}
+.color-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+.color-dot.amarela { background: #eab308; }
+.color-dot.azul    { background: #1d4ed8; }
+
+.gender-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 4px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #f0f4f9; color: #4a6a8a;
+  margin-left: 4px;
+}
+
+.size-btn {
+  padding: 5px 12px;
+  border: 1px solid #d0d8e4;
+  border-radius: 6px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #fff;
+  color: var(--brand-navy);
+}
+.size-btn:hover:not(:disabled) {
+  border-color: var(--brand-orange);
+  background: var(--brand-orange);
+  color: #fff;
+}
+.size-btn.active {
+  border-color: var(--brand-orange);
+  background: var(--brand-orange);
+  color: #fff;
+}
+.size-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.btn-add-cart {
+  width: 100%;
+  padding: 11px 16px;
+  background: var(--brand-navy);
+  color: white;
+  border: none; border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-add-cart:hover:not(:disabled) {
+  background: var(--brand-orange);
+  transform: translateY(-1px);
+}
+.btn-add-cart:disabled {
+  background: #e5e5e5; color: #aaa; cursor: not-allowed; transform: none;
+}
+
+/* Preço com desconto */
+.preco-promo {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px;
+}
+.preco-normal { text-decoration: line-through; color: #9aabbc; font-size: 14px; }
+.preco-atual  { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 900; color: var(--brand-navy); }
+.preco-badge  {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;
+  padding: 2px 7px; border-radius: 4px;
+}
+
+/* ══════════════════════════════════════════════
+   CART SIDEBAR
+══════════════════════════════════════════════ */
+#cart-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+#cart-overlay.open { opacity: 1; pointer-events: all; }
+
+#cart-sidebar {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(420px, 100vw);
+  background: #fff;
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+  box-shadow: -8px 0 48px rgba(0,0,0,0.18);
+}
+#cart-sidebar.open { transform: translateX(0); }
+
+.cart-item-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f4f8;
+}
+.cart-item-icon {
+  width: 56px; height: 56px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 24px;
+}
+.cart-item-icon.amarela { background: linear-gradient(135deg,#fef9c3,#fef3b0); }
+.cart-item-icon.azul    { background: linear-gradient(135deg,#dbeafe,#c9daff); }
+.cart-item-icon.default { background: linear-gradient(135deg,#f0f4ff,#e8e8ec); }
+
+.qty-btn {
+  width: 28px; height: 28px;
+  border: 1px solid #d0d8e4; border-radius: 6px;
+  background: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; transition: all 0.15s;
+}
+.qty-btn:hover { border-color: var(--brand-orange); background: var(--brand-orange); color: #fff; }
+
+/* Banner de promoção no carrinho */
+#cart-promo-banner {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #fff8f5, #fff4ee);
+  border: 1px solid #f9c5ae;
+  border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--brand-orange);
+  display: none;
+  align-items: center; gap: 8px;
+}
+#cart-promo-banner.show { display: flex; }
+
+/* ══════════════════════════════════════════════
+   CHECKOUT MODAL
+══════════════════════════════════════════════ */
+#checkout-modal {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+#checkout-modal.open { opacity: 1; pointer-events: all; }
+#checkout-modal .modal-box {
+  background: #fff; border-radius: 16px;
+  width: min(480px, 100%);
+  max-height: 90vh; overflow-y: auto;
+  padding: 32px;
+  transform: translateY(20px);
+  transition: transform 0.3s;
+}
+#checkout-modal.open .modal-box { transform: translateY(0); }
+
+/* ══════════════════════════════════════════════
+   SUCCESS MODAL
+══════════════════════════════════════════════ */
+#success-modal {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+#success-modal.open { opacity: 1; pointer-events: all; }
+
+/* ══════════════════════════════════════════════
+   SELLER ACCESS MODAL
+══════════════════════════════════════════════ */
+#seller-modal {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+#seller-modal.open { opacity: 1; pointer-events: all; }
+#seller-modal .modal-box {
+  background: var(--brand-navy-dark);
+  border: 1px solid rgba(240,90,31,0.25);
+  border-radius: 18px;
+  width: min(400px, 100%);
+  padding: 36px 32px;
+  transform: translateY(20px);
+  transition: transform 0.3s;
+  text-align: center;
+}
+#seller-modal.open .modal-box { transform: translateY(0); }
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+#toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--brand-navy); color: #fff;
+  padding: 12px 22px; border-radius: 40px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 600; letter-spacing: 0.04em;
+  z-index: 600;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ══════════════════════════════════════════════
+   LOADER
+══════════════════════════════════════════════ */
+.spinner {
+  width: 36px; height: 36px;
+  border: 3px solid #e0e8f0;
+  border-top-color: var(--brand-orange);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════════
+   SECTIONS
+══════════════════════════════════════════════ */
+.section { display: none; }
+.section.active { display: block; }
+
+/* ══════════════════════════════════════════════
+   FILTRO PILLS
+══════════════════════════════════════════════ */
+.filter-pill {
+  padding: 7px 16px;
+  border: 1px solid #d0d8e4; border-radius: 40px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s;
+  background: #fff; color: #7a8a99;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.filter-pill.active {
+  background: var(--brand-navy); border-color: var(--brand-navy); color: #fff;
+}
+.filter-pill:hover:not(.active) { border-color: var(--brand-navy); color: var(--brand-navy); }
+
+/* ══════════════════════════════════════════════
+   PERFIL
+══════════════════════════════════════════════ */
+.order-card {
+  background: #fff; border: 1px solid #e2e8f0;
+  border-radius: 10px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+
+/* ══════════════════════════════════════════════
+   INPUT
+══════════════════════════════════════════════ */
+.form-input {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid #d0d8e4; border-radius: 8px;
+  font-family: 'Barlow', sans-serif; font-size: 15px;
+  outline: none; transition: border-color 0.2s; background: #fff;
+  color: var(--brand-navy);
+}
+.form-input:focus { border-color: var(--brand-orange); }
+
+/* ══════════════════════════════════════════════
+   PAYMENT OPTION
+══════════════════════════════════════════════ */
+.pay-option {
+  flex: 1; padding: 14px 12px;
+  border: 1.5px solid #d0d8e4; border-radius: 10px;
+  text-align: center; cursor: pointer; transition: all 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.pay-option:hover { border-color: var(--brand-orange); }
+.pay-option.active { border-color: var(--brand-orange); background: #fff8f5; }
+.pay-option .pay-icon { font-size: 22px; }
+.pay-option .pay-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════
+   ANIMATED ENTRANCE
+══════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-enter { animation: fadeUp 0.4s ease both; }
+.animate-enter:nth-child(1) { animation-delay: 0.05s; }
+.animate-enter:nth-child(2) { animation-delay: 0.10s; }
+.animate-enter:nth-child(3) { animation-delay: 0.15s; }
+.animate-enter:nth-child(4) { animation-delay: 0.20s; }
+.animate-enter:nth-child(5) { animation-delay: 0.25s; }
+.animate-enter:nth-child(6) { animation-delay: 0.30s; }
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .product-img-wrap { height: 175px; }
+  .shirt-img-icon { font-size: 70px; }
+}
+</style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <nav>
-                <div>
-                    <strong>João Gabriel</strong>
-                </div>
-                <div>
-                    <a href="#sobre">Sobre</a>
-                    <a href="#projetos">Projetos</a>
-                    <a href="#skills">Skills</a>
-                    <a href="#contato">Contato</a>
-                </div>
-                <div class="nav-action">
-                    <a class="dashboard-btn" href="dashboard/dash.html" target="_blank">Dashboard</a>
-                </div>
-            </nav>
-            <div class="hero">
-                <div>
-                    <h1>Portfólio de Projetos</h1>
-                    <p> </p>
-                    <p> </p>
-                    <p>Sou desenvolvedor web e criador de experiências visuais. Aqui você encontra trabalhos recentes, habilidades técnicas e ideias práticas para transformar sua presença digital.</p>
-                </div>
-                <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=900&q=60" alt="Computador com workspace criativo">
-                </div>
-            </div>
+
+<!-- ═══════════════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- LOGO -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('catalog')">
+        <img src="logo_loja.jpg" alt="djota.sports"
+          class="w-10 h-10 rounded-full object-cover border-2"
+          style="border-color: rgba(240,90,31,0.3);"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <!-- Fallback se logo não carregar -->
+        <div style="display:none;" class="w-10 h-10 rounded-full flex items-center justify-center"
+          style="background: var(--brand-navy);">
+          <i class="fa-solid fa-shirt text-white text-sm"></i>
         </div>
-    </header>
-
-    <main class="container">
-        <section id="sobre">
-            <h2 class="section-title">Sobre Mim</h2>
-            <div class="grid" style="grid-template-columns: 1fr 1fr; align-items: left;">
-                <div>
-                    <p>Me chamo João Gabriel, sou apaixonado por transformar ideias em páginas elegantes e funcionais. Trabalho com HTML, CSS, e frameworks modernos para criar experiências intuitivas, responsivas e do jeito certo para cada cliente.</p>
-                    <p>Adoro colaborar em projetos que unem design, performance e usabilidade. Busco entregar soluções claras, organizadas e prontas para o futuro.</p>
-                </div>
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80" alt="Foto de portfólio">
-                    <h3>Minha abordagem</h3>
-                    <p>Crio sites pensando em acessibilidade, velocidade e visual moderno. Cada projeto é planejado para oferecer uma navegação fácil e um conteúdo que se destaca.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="projetos">
-            <h2 class="section-title">Projetos Recentes</h2>
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
-                <article class="card">
-                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60" alt="Projeto de site responsivo">
-                    <h3>Landing Page Corporativa</h3>
-                    <p>Desenvolvimento de uma landing page responsiva para uma startup de tecnologia, com foco em apresentação clara de serviços e conversão de leads.</p>
-                </article>
-                <article class="card">
-                    <img src="https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?auto=format&fit=crop&w=600&q=60" alt="Dashboard de análise">
-                    <h3>Dashboard de análise</h3>
-                    <p>Interface visual para dashboard de dados, com cards de métricas, gráficos limpos e navegação simples para usuários administrativos.</p>
-                </article>
-                <article class="card">
-                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=60" alt="Portfolio de design gráfico">
-                    <h3>Portfólio criativo</h3>
-                    <p>Site pessoal com portfólio de design e projetos visuais, integrado com animações sutis e galeria de imagens para destacar trabalhos anteriores.</p>
-                </article>
-            </div>
-        </section>
-
-        <section id="skills">
-            <h2 class="section-title">Skills</h2>
-            <div class="skills-list">
-                <div class="skill-item">HTML5</div>
-                <div class="skill-item">CSS3</div>
-                <div class="skill-item">Boa Comunicação</div>
-                <div class="skill-item">Trabalho em Equipe</div>
-                <div class="skill-item">Responsive Design</div>
-                <div class="skill-item">Aprendizagem Rápida</div>
-            </div>
-        </section>
-
-        <section id="contato">
-            <h2 class="section-title">Contato</h2>
-            <div class="contact-card">
-                <div>
-                    <h3>Entre em contato!</h3>
-                    <p>Se você tem um projeto em mente ou quer discutir ideias, envie uma mensagem e eu retornarei o contato em breve.</p>
-                </div>
-                <div>
-                    <p><strong>Email:</strong> <a href="mailto:joao08.oliveira05@gmail.com">joao08.oliveira05@gmail.com</a></p>
-                    <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/joaogabriel" target="_blank">linkedin.com/in/joaogabriel</a></p>
-                    <p><strong>GitHub:</strong> <a href="https://github.com/joaogabriel" target="_blank">github.com/joaogabriel</a></p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>© 2026 João Gabriel. Todos os direitos reservados.</p>
+        <div class="hidden sm:block">
+          <span class="font-display font-black text-xl tracking-widest uppercase"
+            style="color: var(--brand-navy);">djota<span style="color: var(--brand-orange);">.</span>sports</span>
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400 -mt-0.5">Artigos Esportivos</p>
         </div>
-    </footer>
+      </div>
+
+      <!-- TABS (desktop) -->
+      <div class="hidden sm:flex items-end gap-8 h-16">
+        <button class="nav-tab active" data-tab="catalog" onclick="switchTab('catalog')">
+          <i class="fa-solid fa-grid-2 mr-1.5 text-xs"></i>Catálogo
+        </button>
+        <button class="nav-tab" data-tab="perfil" onclick="switchTab('perfil')">
+          <i class="fa-solid fa-user mr-1.5 text-xs"></i>Perfil
+        </button>
+        <!-- ACESSO AO DASHBOARD (para vendedores) -->
+        <button class="nav-tab-dash" onclick="abrirSellerModal()" title="Área do Vendedor">
+          <i class="fa-solid fa-chart-line text-xs"></i>Dashboard
+        </button>
+      </div>
+
+      <!-- CART BUTTON + MOBILE TABS -->
+      <div class="flex items-center gap-2">
+        <!-- Mobile tabs -->
+        <div class="flex sm:hidden gap-1">
+          <button onclick="switchTab('catalog')"
+            class="text-[10px] font-display font-bold uppercase tracking-widest px-3 py-1.5 rounded-md transition-colors"
+            id="mob-tab-catalog" style="background: var(--brand-navy); color:#fff;">
+            <i class="fa-solid fa-grid-2"></i>
+          </button>
+          <button onclick="switchTab('perfil')"
+            class="text-[10px] font-display font-bold uppercase tracking-widest px-3 py-1.5 rounded-md transition-colors text-[#888]"
+            id="mob-tab-perfil">
+            <i class="fa-solid fa-user"></i>
+          </button>
+          <button onclick="abrirSellerModal()"
+            class="text-[10px] px-2.5 py-1.5 rounded-md transition-colors"
+            style="background: rgba(240,90,31,0.12); color: var(--brand-orange);">
+            <i class="fa-solid fa-chart-line text-[11px]"></i>
+          </button>
+        </div>
+        <!-- Cart -->
+        <button onclick="openCart()"
+          class="relative flex items-center gap-2 text-white px-4 py-2 rounded-lg font-display font-bold text-sm uppercase tracking-wider transition-colors"
+          style="background: var(--brand-navy);"
+          onmouseover="this.style.background='var(--brand-orange)'"
+          onmouseout="this.style.background='var(--brand-navy)'">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="hidden sm:inline">Carrinho</span>
+          <span id="cart-count"
+            class="hidden absolute -top-2 -right-2 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+            style="background: var(--brand-orange);">0
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════ -->
+<section id="hero-section" class="hero-pattern text-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 flex flex-col sm:flex-row items-center gap-8">
+    <div class="flex-1">
+      <div class="brasil-badge mb-1">
+        <i class="fa-solid fa-futbol text-[10px]"></i>
+        Nova Coleção • 2025
+      </div>
+      <h1 class="font-display font-black text-5xl sm:text-7xl leading-none uppercase mb-4">
+        Vista<br>
+        <span style="color: var(--brand-orange);">sua</span><br>
+        paixão.
+      </h1>
+      <p class="text-gray-400 text-base max-w-sm leading-relaxed mb-5">
+        Camisas oficiais de time e materiais esportivos com qualidade premium.
+        Estoque limitado — garanta o seu agora.
+      </p>
+      <!-- Destaque do desconto -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-4 py-2.5">
+          <span class="text-2xl">🇧🇷</span>
+          <div>
+            <p class="font-display font-black text-sm uppercase tracking-wider leading-none">Seleção Brasileira</p>
+            <p class="text-gray-400 text-xs mt-0.5">Masc & Fem · Amarelo & Azul</p>
+          </div>
+        </div>
+        <div class="border border-green-500/30 bg-green-500/10 rounded-lg px-4 py-2.5">
+          <p class="font-display font-black text-sm text-green-400 uppercase tracking-wider leading-none">3+ camisas</p>
+          <p class="text-gray-400 text-xs mt-0.5">R$ 189,90 cada</p>
+        </div>
+      </div>
+    </div>
+    <div class="flex-shrink-0 relative">
+      <div class="w-44 h-44 sm:w-60 sm:h-60 rounded-full flex items-center justify-content-center items-center justify-center"
+        style="background: radial-gradient(circle, rgba(240,90,31,0.15) 0%, rgba(13,30,54,0.4) 70%); border: 1px solid rgba(240,90,31,0.2);">
+        <i class="fa-solid fa-shirt text-7xl sm:text-8xl text-white/10"></i>
+      </div>
+      <!-- Badge Entrega Rápida -->
+      <div class="absolute -top-3 -right-3 w-16 h-16 rounded-full flex flex-col items-center justify-center text-center"
+        style="background: var(--brand-orange);">
+        <span class="font-display font-black text-white text-[9px] leading-tight uppercase px-1">Entrega<br>Rápida</span>
+      </div>
+      <!-- Badge desconto -->
+      <div class="absolute -bottom-2 -left-2 bg-green-500 text-white rounded-full w-14 h-14 flex flex-col items-center justify-center text-center">
+        <span class="font-display font-black text-[9px] leading-tight uppercase">-5%<br>3un+</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SEÇÃO: CATÁLOGO
+════════════════════════════════════════════════════ -->
+<section id="section-catalog" class="section active">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+
+    <!-- Filtros + Busca -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h2 class="font-display font-black text-3xl uppercase tracking-tight" style="color: var(--brand-navy);">Produtos</h2>
+        <p class="text-gray-500 text-sm mt-0.5" id="product-count">Carregando catálogo...</p>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <button class="filter-pill active" data-filter="todos" onclick="setFilter('todos', this)">Todos</button>
+        <button class="filter-pill" data-filter="camisa" onclick="setFilter('camisa', this)">Camisas</button>
+        <button class="filter-pill" data-filter="material" onclick="setFilter('material', this)">Materiais</button>
+      </div>
+    </div>
+
+    <!-- Aviso de desconto para 3+ -->
+    <div class="flex items-center gap-3 mb-6 p-3 rounded-xl border"
+      style="background: linear-gradient(135deg,#fff8f5,#fff4ee); border-color: #f9c5ae;">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+        style="background: var(--brand-orange);">
+        <i class="fa-solid fa-tag text-white text-xs"></i>
+      </div>
+      <div>
+        <p class="font-display font-black text-sm uppercase tracking-wide" style="color: var(--brand-orange);">
+          Promoção: Compre 3 ou mais camisas
+        </p>
+        <p class="text-xs text-gray-500">De R$ 199,90 por <strong style="color:#16a34a;">R$ 189,90 cada</strong> — desconto aplicado automaticamente no carrinho</p>
+      </div>
+    </div>
+
+    <!-- Estado: Carregando -->
+    <div id="catalog-loading" class="flex flex-col items-center justify-center py-24 gap-4">
+      <div class="spinner"></div>
+      <p class="font-display font-bold text-gray-400 tracking-widest uppercase text-sm">Carregando estoque...</p>
+    </div>
+
+    <!-- Estado: Erro -->
+    <div id="catalog-error" class="hidden flex flex-col items-center justify-center py-24 gap-4 text-center">
+      <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-400"></i>
+      <p class="font-display font-bold text-xl uppercase tracking-tight">Erro ao carregar produtos</p>
+      <p class="text-gray-500 text-sm max-w-xs">Verifique a URL do Google Sheets ou tente novamente.</p>
+      <button onclick="loadProducts()"
+        class="mt-2 text-white px-6 py-2.5 rounded-lg font-display font-bold text-sm uppercase tracking-wider transition-colors"
+        style="background: var(--brand-navy);"
+        onmouseover="this.style.background='var(--brand-orange)'"
+        onmouseout="this.style.background='var(--brand-navy)'">
+        <i class="fa-solid fa-rotate-right mr-2"></i>Tentar novamente
+      </button>
+    </div>
+
+    <!-- Grade de Produtos -->
+    <div id="product-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SEÇÃO: PERFIL
+════════════════════════════════════════════════════ -->
+<section id="section-perfil" class="section">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+    <h2 class="font-display font-black text-3xl uppercase tracking-tight mb-8" style="color: var(--brand-navy);">Meu Perfil</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Card Dados do Usuário -->
+      <div class="lg:col-span-1">
+        <div class="bg-white border border-gray-200 rounded-2xl p-6">
+          <div class="flex flex-col items-center text-center mb-6">
+            <div class="w-20 h-20 rounded-full flex items-center justify-center mb-3"
+              style="background: var(--brand-navy);">
+              <i class="fa-solid fa-user text-3xl text-white/60"></i>
+            </div>
+            <p class="font-display font-black text-xl uppercase tracking-tight" id="profile-name">Visitante</p>
+            <p class="text-gray-400 text-sm mt-0.5" id="profile-city">—</p>
+          </div>
+          <div class="flex flex-col gap-3">
+            <div>
+              <label class="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1.5">Nome completo</label>
+              <input type="text" class="form-input" id="input-nome" placeholder="Seu nome" oninput="updateProfile()">
+            </div>
+            <div>
+              <label class="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1.5">WhatsApp</label>
+              <input type="tel" class="form-input" id="input-whats" placeholder="(00) 00000-0000" maxlength="15" oninput="updateProfile()">
+            </div>
+            <div>
+              <label class="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1.5">Cidade / Estado</label>
+              <input type="text" class="form-input" id="input-cidade" placeholder="Ex: São Paulo - SP" oninput="updateProfile()">
+            </div>
+            <div>
+              <label class="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1.5">Endereço de entrega</label>
+              <input type="text" class="form-input" id="input-endereco" placeholder="Rua, número, bairro...">
+            </div>
+            <button onclick="saveProfile()"
+              class="w-full mt-1 text-white py-3 rounded-lg font-display font-bold uppercase tracking-wider text-sm transition-colors"
+              style="background: var(--brand-navy);"
+              onmouseover="this.style.background='var(--brand-orange)'"
+              onmouseout="this.style.background='var(--brand-navy)'">
+              <i class="fa-solid fa-floppy-disk mr-2"></i>Salvar dados
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Histórico + Stats -->
+      <div class="lg:col-span-2">
+        <div class="bg-white border border-gray-200 rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-display font-black text-xl uppercase tracking-tight">Histórico de Pedidos</h3>
+          </div>
+          <div class="flex flex-col gap-3" id="order-history">
+            <div class="order-card animate-enter">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                style="background: rgba(240,90,31,0.1);">
+                <i class="fa-solid fa-shirt text-sm" style="color: var(--brand-orange);"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm">Camisa Seleção Amarela Masc • M</p>
+                <p class="text-gray-400 text-xs mt-0.5">15/05/2025 · 1 unidade · Pix</p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <p class="font-display font-black text-base">R$ 199,90</p>
+                <span class="inline-block bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mt-0.5">
+                  <i class="fa-solid fa-check mr-1"></i>Entregue
+                </span>
+              </div>
+            </div>
+            <div class="order-card animate-enter">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                style="background: rgba(29,78,216,0.1);">
+                <i class="fa-solid fa-shirt text-blue-600 text-sm"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm">Camisa Seleção Azul Fem • G</p>
+                <p class="text-gray-400 text-xs mt-0.5">02/06/2025 · 3 unidades · Cartão</p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <p class="font-display font-black text-base">R$ 569,70</p>
+                <span class="inline-block bg-amber-50 text-amber-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mt-0.5">
+                  <i class="fa-solid fa-truck mr-1"></i>A caminho
+                </span>
+              </div>
+            </div>
+          </div>
+          <p class="text-center text-gray-300 text-xs mt-6 font-display uppercase tracking-widest">
+            Dados de demonstração • Pedidos reais via WhatsApp
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div class="bg-white border border-gray-200 rounded-xl p-4 text-center animate-enter">
+            <p class="font-display font-black text-2xl" style="color: var(--brand-navy);">2</p>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-0.5">Pedidos</p>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-4 text-center animate-enter">
+            <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mx-auto">
+              <i class="fa-solid fa-check text-white text-xs"></i>
+            </div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-1.5">Ativo</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     CART OVERLAY + SIDEBAR
+════════════════════════════════════════════════════ -->
+<div id="cart-overlay" onclick="closeCart()"></div>
+
+<aside id="cart-sidebar">
+
+  <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+    <div class="flex items-center gap-3">
+      <i class="fa-solid fa-bag-shopping text-lg" style="color: var(--brand-navy);"></i>
+      <span class="font-display font-black text-xl uppercase tracking-tight">Carrinho</span>
+      <span id="cart-badge" class="text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden"
+        style="background: var(--brand-orange);">0</span>
+    </div>
+    <button onclick="closeCart()" class="text-gray-400 hover:text-gray-900 transition-colors text-xl">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="flex-1 overflow-y-auto px-6" id="cart-items-container">
+    <!-- Vazio -->
+    <div id="cart-empty" class="flex flex-col items-center justify-center h-full gap-4 text-center py-16">
+      <div class="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center">
+        <i class="fa-solid fa-bag-shopping text-3xl text-gray-200"></i>
+      </div>
+      <div>
+        <p class="font-display font-black text-lg uppercase tracking-tight text-gray-700">Carrinho vazio</p>
+        <p class="text-gray-400 text-sm mt-1">Adicione produtos para começar</p>
+      </div>
+      <button onclick="closeCart()" class="mt-2 border border-gray-200 px-5 py-2.5 rounded-lg font-display font-bold uppercase text-sm tracking-wider hover:border-gray-900 transition-colors">
+        Ver produtos
+      </button>
+    </div>
+
+    <!-- Lista de itens -->
+    <div id="cart-items-list" class="hidden divide-y divide-gray-50 py-2"></div>
+
+    <!-- Banner promo 3+ -->
+    <div id="cart-promo-banner">
+      <i class="fa-solid fa-tag"></i>
+      Desconto 3+ aplicado! R$189,90/camisa
+    </div>
+  </div>
+
+  <!-- Footer do carrinho -->
+  <div id="cart-footer" class="hidden border-t border-gray-100 px-6 py-5 bg-white">
+    <div class="flex justify-between items-center mb-1">
+      <span class="text-gray-500 text-sm">Subtotal</span>
+      <span class="font-bold" id="cart-subtotal">R$ 0,00</span>
+    </div>
+    <div id="cart-discount-row" class="hidden flex justify-between items-center mb-1">
+      <span class="text-green-600 text-sm font-medium">Desconto 3+</span>
+      <span class="text-green-600 font-bold text-sm" id="cart-discount-val">-R$ 0,00</span>
+    </div>
+    <div class="flex justify-between items-center mb-4">
+      <span class="text-gray-500 text-sm">Frete</span>
+      <span class="text-green-600 font-bold text-sm">A combinar</span>
+    </div>
+    <div class="flex justify-between items-center mb-5 pt-3 border-t border-gray-100">
+      <span class="font-display font-black text-lg uppercase tracking-tight">Total</span>
+      <span class="font-display font-black text-2xl" id="cart-total">R$ 0,00</span>
+    </div>
+    <button onclick="openCheckout()"
+      class="w-full text-white py-4 rounded-xl font-display font-black text-base uppercase tracking-wider transition-colors flex items-center justify-center gap-3"
+      style="background: var(--brand-navy);"
+      onmouseover="this.style.background='var(--brand-orange)'"
+      onmouseout="this.style.background='var(--brand-navy)'">
+      <i class="fa-brands fa-whatsapp text-xl"></i>
+      Finalizar pedido
+    </button>
+    <p class="text-center text-gray-400 text-xs mt-3">Pedido confirmado via WhatsApp</p>
+  </div>
+
+</aside>
+
+<!-- ═══════════════════════════════════════════════════
+     CHECKOUT MODAL
+════════════════════════════════════════════════════ -->
+<div id="checkout-modal">
+  <div class="modal-box">
+
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display font-black text-2xl uppercase tracking-tight">Finalizar Pedido</h2>
+      <button onclick="closeCheckout()" class="text-gray-400 hover:text-gray-900 transition-colors text-xl">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="mb-6">
+      <p class="font-display font-bold text-xs uppercase tracking-widest text-gray-400 mb-3">Seus dados</p>
+      <div class="flex flex-col gap-3">
+        <div>
+          <label class="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1.5">Nome completo *</label>
+          <input type="text" class="form-input" id="checkout-nome" placeholder="Seu nome completo">
+        </div>
+        <div>
+          <label class="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1.5">WhatsApp *</label>
+          <input type="tel" class="form-input" id="checkout-whats" placeholder="(00) 00000-0000" maxlength="15">
+        </div>
+        <div>
+          <label class="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-1.5">Endereço de entrega</label>
+          <input type="text" class="form-input" id="checkout-endereco" placeholder="Rua, número, bairro, cidade">
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <p class="font-display font-bold text-xs uppercase tracking-widest text-gray-400 mb-3">Método de pagamento</p>
+      <div class="flex gap-3">
+        <div class="pay-option active" id="pay-pix" onclick="selectPayment('pix')">
+          <span class="pay-icon">💠</span>
+          <span class="pay-label">Pix</span>
+          <span class="text-[10px] text-gray-400">Aprovação imediata</span>
+        </div>
+        <div class="pay-option" id="pay-cartao" onclick="selectPayment('cartao')">
+          <span class="pay-icon">💳</span>
+          <span class="pay-label">Cartão</span>
+          <span class="text-[10px] text-gray-400">Crédito / Débito</span>
+        </div>
+        <div class="pay-option" id="pay-dinheiro" onclick="selectPayment('dinheiro')">
+          <span class="pay-icon">💵</span>
+          <span class="pay-label">Dinheiro</span>
+          <span class="text-[10px] text-gray-400">Na entrega</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-6 rounded-xl p-4" style="background: #f8f9fb;">
+      <p class="font-display font-bold text-xs uppercase tracking-widest text-gray-400 mb-3">Resumo do pedido</p>
+      <div id="checkout-summary" class="flex flex-col gap-2"></div>
+      <!-- desconto no checkout -->
+      <div id="checkout-discount-row" class="hidden mt-2 flex justify-between items-center text-sm">
+        <span class="text-green-600 font-medium">Desconto 3+ unidades</span>
+        <span class="text-green-600 font-bold" id="checkout-discount-val">-R$ 0,00</span>
+      </div>
+      <div class="border-t border-gray-200 mt-3 pt-3 flex justify-between items-center">
+        <span class="font-display font-black text-base uppercase">Total</span>
+        <span class="font-display font-black text-2xl" id="checkout-total">R$ 0,00</span>
+      </div>
+    </div>
+
+    <button onclick="finalizarPedido()"
+      class="w-full py-4 rounded-xl font-display font-black text-base uppercase tracking-wider transition-colors flex items-center justify-center gap-3 text-white"
+      style="background: #25d366;"
+      onmouseover="this.style.background='#1fbb57'"
+      onmouseout="this.style.background='#25d366'">
+      <i class="fa-brands fa-whatsapp text-2xl"></i>
+      Enviar pedido via WhatsApp
+    </button>
+    <p class="text-center text-gray-400 text-xs mt-3">Você será redirecionado ao WhatsApp com o pedido formatado</p>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SUCCESS MODAL
+════════════════════════════════════════════════════ -->
+<div id="success-modal">
+  <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center mx-4">
+    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <i class="fa-brands fa-whatsapp text-3xl text-green-600"></i>
+    </div>
+    <h3 class="font-display font-black text-2xl uppercase tracking-tight mb-2">Pedido enviado!</h3>
+    <p class="text-gray-500 text-sm leading-relaxed mb-6">
+      Seu pedido foi formatado e o WhatsApp foi aberto. Envie a mensagem ao vendedor para confirmar.
+    </p>
+    <button onclick="closeSuccess()"
+      class="w-full text-white py-3 rounded-lg font-display font-bold uppercase tracking-wider text-sm transition-colors"
+      style="background: var(--brand-navy);"
+      onmouseover="this.style.background='var(--brand-orange)'"
+      onmouseout="this.style.background='var(--brand-navy)'">
+      Continuar comprando
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SELLER ACCESS MODAL
+════════════════════════════════════════════════════ -->
+<div id="seller-modal">
+  <div class="modal-box">
+    <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5"
+      style="background: linear-gradient(135deg, var(--brand-orange), #b83e10);">
+      <i class="fa-solid fa-chart-line text-white text-2xl"></i>
+    </div>
+    <h2 class="font-display font-black text-2xl uppercase tracking-wider text-white mb-2">Área do Vendedor</h2>
+    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+      Acesse o painel de gestão da loja com controle de estoque, vendas e financeiro em tempo real.
+    </p>
+    <div class="flex flex-col gap-3">
+      <button onclick="irParaDashboard()"
+        class="w-full py-3.5 rounded-xl font-display font-black text-base uppercase tracking-wider text-white transition-all flex items-center justify-center gap-3"
+        style="background: var(--brand-orange);"
+        onmouseover="this.style.background='#d94d16'"
+        onmouseout="this.style.background='var(--brand-orange)'">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        Entrar no Dashboard
+      </button>
+      <button onclick="fecharSellerModal()"
+        class="w-full py-3 rounded-xl font-display font-bold text-sm uppercase tracking-wider text-gray-400 border border-gray-700 transition-colors hover:text-white">
+        Cancelar
+      </button>
+    </div>
+    <p class="text-gray-600 text-xs mt-5">O acesso é protegido por autenticação Google OAuth.</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">
+  <i id="toast-icon" class="fa-solid fa-check"></i>
+  <span id="toast-msg">Adicionado ao carrinho!</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════ -->
+<footer class="border-t border-gray-200 mt-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="logo_loja.jpg" alt="djota.sports" class="w-9 h-9 rounded-full object-cover"
+          onerror="this.style.display='none'">
+        <div>
+          <span class="font-display font-black text-lg tracking-widest uppercase"
+            style="color: var(--brand-navy);">djota<span style="color: var(--brand-orange);">.</span>sports</span>
+          <p class="text-[9px] font-bold uppercase tracking-widest text-gray-400">Artigos Esportivos</p>
+        </div>
+      </div>
+      <p class="text-gray-400 text-sm text-center">Camisas de time & materiais esportivos • Qualidade premium</p>
+      <div class="flex items-center gap-4 text-gray-400">
+        <a href="https://www.instagram.com/djota.sports/" target="_blank" rel="noopener" class="hover:text-pink-500 transition-colors text-lg"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://wa.me/5535988966613" target="_blank" rel="noopener" class="hover:text-green-500 transition-colors text-lg"><i class="fa-brands fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="border-t border-gray-100 mt-6 pt-4 text-center text-gray-300 text-xs font-display uppercase tracking-widest">
+      © 2025 djota.sports — Todos os direitos reservados
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT PRINCIPAL
+════════════════════════════════════════════════════ -->
+<script>
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  ⚙️  CONFIGURAÇÕES — EDITE ANTES DE PUBLICAR                ║
+// ╠══════════════════════════════════════════════════════════════╣
+// ║  1. CSV_URL  → Google Sheets publicado como CSV             ║
+// ║  2. WHATSAPP_NUMBER → 55 + DDD + número (só dígitos)        ║
+// ║  3. DASHBOARD_URL → URL do seu dashboard.html              ║
+// ╚══════════════════════════════════════════════════════════════╝
+const CONFIG = {
+  CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQeziQ2L-3XrZBYmfBkW6KRt8-dby34QEfH88E0pIiTX34h35Vejrp2PHrhua60Pg/pub?gid=1893955553&single=true&output=csv',
+  WHATSAPP_NUMBER: '5535988966613',
+  DASHBOARD_URL:  'dashboard/dash.html',
+  STOCK_START_ROW: 3,
+  STOCK_END_ROW:   12,
+  COL_NOME:     0,
+  COL_TAMANHO:  1,
+  COL_PRECO:    2,
+  COL_COMPRADO: 3,
+  COL_VENDIDO:  4,
+  PRECO_PADRAO: 199.90,
+  MIN_PRECO:    10,    // produtos abaixo desse preço são ignorados (dados de teste)
+  MIN_NOME_LEN: 8,     // nomes muito curtos são ignorados
+};
+
+// ══════════════════════════════════════════════════════════════
+// PRODUTOS ESTÁTICOS — Seleção Brasileira
+// ══════════════════════════════════════════════════════════════
+const BRASIL_PRODUTOS = [
+  {
+    id: 'camisa-brasil-amarela-masc',
+    nome: 'Seleção Brasileira — Amarela Masculino',
+    preco: 199.90,
+    promoPreco: 189.90,
+    sizes: [
+      { tamanho: 'P',  estoque: 10 },
+      { tamanho: 'M',  estoque: 10 },
+      { tamanho: 'G',  estoque: 10 },
+      { tamanho: 'GG', estoque: 10 },
+    ],
+    category: 'camisa',
+    cor: 'amarela',
+    genero: 'Masculino',
+  },
+  {
+    id: 'camisa-brasil-amarela-fem',
+    nome: 'Seleção Brasileira — Amarela Feminino',
+    preco: 199.90,
+    promoPreco: 189.90,
+    sizes: [
+      { tamanho: 'P',  estoque: 10 },
+      { tamanho: 'M',  estoque: 10 },
+      { tamanho: 'G',  estoque: 10 },
+      { tamanho: 'GG', estoque: 10 },
+    ],
+    category: 'camisa',
+    cor: 'amarela',
+    genero: 'Feminino',
+  },
+  {
+    id: 'camisa-brasil-azul-masc',
+    nome: 'Seleção Brasileira — Azul Masculino',
+    preco: 199.90,
+    promoPreco: 189.90,
+    sizes: [
+      { tamanho: 'P',  estoque: 10 },
+      { tamanho: 'M',  estoque: 10 },
+      { tamanho: 'G',  estoque: 10 },
+      { tamanho: 'GG', estoque: 10 },
+    ],
+    category: 'camisa',
+    cor: 'azul',
+    genero: 'Masculino',
+  },
+  {
+    id: 'camisa-brasil-azul-fem',
+    nome: 'Seleção Brasileira — Azul Feminino',
+    preco: 199.90,
+    promoPreco: 189.90,
+    sizes: [
+      { tamanho: 'P',  estoque: 10 },
+      { tamanho: 'M',  estoque: 10 },
+      { tamanho: 'G',  estoque: 10 },
+      { tamanho: 'GG', estoque: 10 },
+    ],
+    category: 'camisa',
+    cor: 'azul',
+    genero: 'Feminino',
+  },
+];
+
+// ══════════════════════════════════════════════════════════════
+// ESTADO GLOBAL
+// ══════════════════════════════════════════════════════════════
+let allProducts      = [];
+let filteredProducts = [];
+let cart             = [];
+let activeFilter     = 'todos';
+let paymentMethod    = 'pix';
+const selectedSizes  = {};
+
+// ══════════════════════════════════════════════════════════════
+// PARSE CSV
+// ══════════════════════════════════════════════════════════════
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  return lines.map(line => {
+    const cols = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQuotes = !inQuotes; }
+      else if (ch === ',' && !inQuotes) { cols.push(current.trim()); current = ''; }
+      else { current += ch; }
+    }
+    cols.push(current.trim());
+    return cols;
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// CARREGAR PRODUTOS (Google Sheets + produtos estáticos)
+// ══════════════════════════════════════════════════════════════
+async function loadProducts() {
+  const loading = document.getElementById('catalog-loading');
+  const error   = document.getElementById('catalog-error');
+  const grid    = document.getElementById('product-grid');
+
+  loading.classList.remove('hidden');
+  error.classList.add('hidden');
+  grid.classList.add('hidden');
+
+  // Começa com os produtos estáticos da Seleção
+  let sheetProducts = [];
+
+  try {
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(CONFIG.CSV_URL)}`;
+    let response;
+    try {
+      response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error('proxy failed');
+    } catch {
+      response = await fetch(CONFIG.CSV_URL);
+    }
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const text   = await response.text();
+    const parsed = parseCSV(text);
+    const stockRows = parsed.slice(CONFIG.STOCK_START_ROW, CONFIG.STOCK_END_ROW + 1);
+    const modelMap  = {};
+
+    stockRows.forEach(row => {
+      if (!row[CONFIG.COL_NOME] || row[CONFIG.COL_NOME] === '') return;
+      const nome    = row[CONFIG.COL_NOME].trim();
+      const tamanho = (row[CONFIG.COL_TAMANHO] || '').trim().toUpperCase();
+      const comprado= parseInt(row[CONFIG.COL_COMPRADO]) || 0;
+      const vendido = parseInt(row[CONFIG.COL_VENDIDO])  || 0;
+      const estoque = Math.max(0, comprado - vendido);
+
+      let preco = CONFIG.PRECO_PADRAO;
+      if (row[CONFIG.COL_PRECO]) {
+        const raw = row[CONFIG.COL_PRECO].replace(/[R$\s]/g,'').replace(',','.');
+        const p   = parseFloat(raw);
+        if (!isNaN(p) && p > 0) preco = p;
+      }
+
+      if (!modelMap[nome]) {
+        modelMap[nome] = {
+          id: slugify(nome),
+          nome,
+          preco,
+          promoPreco: null,
+          sizes: [],
+          category: detectCategory(nome),
+          cor: null,
+          genero: null,
+        };
+      }
+      if (tamanho) modelMap[nome].sizes.push({ tamanho, estoque });
+    });
+
+    sheetProducts = Object.values(modelMap).filter(p => p.nome);
+
+    // Filtrar produtos de teste / dados inválidos da planilha
+    const nomesInvalidos = new Set(['produto', 'teste', 'test', 'azul', 'amarela', 'verde', 'branco', 'preto']);
+    sheetProducts = sheetProducts.filter(p => {
+      const nome = p.nome.toLowerCase().trim();
+      if (p.preco < CONFIG.MIN_PRECO)  return false;
+      if (nome.length < CONFIG.MIN_NOME_LEN) return false;
+      if (nomesInvalidos.has(nome))    return false;
+      return true;
+    });
+  } catch (err) {
+    console.warn('Sheets não disponível, usando apenas produtos estáticos:', err);
+  }
+
+  // Mesclar: produtos da planilha primeiro, depois os estáticos que não
+  // existam na planilha (por ID)
+  const sheetIds = new Set(sheetProducts.map(p => p.id));
+  const staticToAdd = BRASIL_PRODUTOS.filter(p => !sheetIds.has(p.id));
+
+  // Atualizar estoque dos estáticos com dados da planilha se houver correspondência por nome
+  BRASIL_PRODUTOS.forEach(staticP => {
+    const match = sheetProducts.find(sp =>
+      sp.nome.toLowerCase().includes(staticP.id.replace('camisa-brasil-','').replace(/-/g,' '))
+    );
+    if (match) {
+      staticP.sizes = match.sizes;
+    }
+  });
+
+  allProducts      = [...BRASIL_PRODUTOS, ...sheetProducts.filter(p => !p.id.includes('brasil'))];
+  filteredProducts = [...allProducts];
+
+  renderProductGrid(filteredProducts);
+  loading.classList.add('hidden');
+  grid.classList.remove('hidden');
+  document.getElementById('product-count').textContent =
+    `${allProducts.length} produto${allProducts.length !== 1 ? 's' : ''} disponíveis`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// DETECTAR CATEGORIA
+// ══════════════════════════════════════════════════════════════
+function detectCategory(nome) {
+  const lower = nome.toLowerCase();
+  if (lower.includes('camisa') || lower.includes('camiseta') || lower.includes('jersey') || lower.includes('seleção')) return 'camisa';
+  return 'material';
+}
+
+function slugify(str) {
+  return str.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDERIZAR GRADE
+// ══════════════════════════════════════════════════════════════
+function renderProductGrid(products) {
+  const grid = document.getElementById('product-grid');
+  if (!products.length) {
+    grid.innerHTML = `
+      <div class="col-span-full flex flex-col items-center justify-center py-20 gap-3 text-center">
+        <i class="fa-solid fa-magnifying-glass text-3xl text-gray-200"></i>
+        <p class="font-display font-black text-xl uppercase tracking-tight text-gray-400">Nenhum produto encontrado</p>
+      </div>`;
+    return;
+  }
+  grid.innerHTML = products.map((p, idx) => renderProductCard(p, idx)).join('');
+  products.forEach(p => {
+    const first = p.sizes.find(s => s.estoque > 0);
+    if (first) selectSize(p.id, first.tamanho);
+  });
+}
+
+function getProductAccent(p) {
+  if (p.cor === 'amarela') return { bg: 'brasil-amarela', icon: 'shirt-img-icon' };
+  if (p.cor === 'azul')    return { bg: 'brasil-azul',    icon: 'shirt-img-icon' };
+  const h = [...(p.nome||'')].reduce((a,c) => a + c.charCodeAt(0), 0);
+  const palettes = [
+    { bg: 'bg-gradient-to-br from-blue-100 to-blue-50',   icon: '#2563eb' },
+    { bg: 'bg-gradient-to-br from-green-100 to-green-50', icon: '#16a34a' },
+    { bg: 'bg-gradient-to-br from-red-100 to-red-50',     icon: '#dc2626' },
+    { bg: 'bg-gradient-to-br from-yellow-100 to-yellow-50',icon:'#ca8a04'},
+    { bg: 'bg-gradient-to-br from-purple-100 to-purple-50',icon:'#9333ea'},
+    { bg: 'bg-gradient-to-br from-orange-100 to-orange-50',icon:'#ea580c'},
+  ];
+  const p_ = palettes[h % palettes.length];
+  return { bgClass: p_.bg, iconColor: p_.icon };
+}
+
+function renderProductCard(p) {
+  const acc         = getProductAccent(p);
+  const allEsgotado = p.sizes.every(s => s.estoque === 0);
+  const isBrasil    = !!p.cor;
+  const precoFmt    = formatCurrency(p.preco);
+  const promoFmt    = p.promoPreco ? formatCurrency(p.promoPreco) : null;
+  const hasSizes    = p.sizes.length > 0;
+
+  const sizesHTML = hasSizes
+    ? p.sizes.map(s => `
+        <button
+          class="size-btn"
+          id="sz-${p.id}-${s.tamanho}"
+          data-product="${p.id}"
+          data-size="${s.tamanho}"
+          onclick="selectSize('${p.id}', '${s.tamanho}')"
+          ${s.estoque === 0 ? 'disabled title="Esgotado"' : ''}
+        >${s.tamanho}</button>`).join('')
+    : '<span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Tamanho único</span>';
+
+  const imgSection = isBrasil
+    ? `<div class="product-img-wrap ${acc.bg}">
+        <div class="brasil-stripe ${p.cor}"></div>
+        <i class="fa-solid fa-shirt shirt-img-icon ${acc.icon}"></i>
+        <span class="br-flag">🇧🇷</span>
+        ${allEsgotado
+          ? '<span class="product-badge sold-out">Esgotado</span>'
+          : '<span class="product-badge">Em estoque</span>'}
+        ${promoFmt ? '<span class="product-badge promo">3+ = R$189,90</span>' : ''}
+      </div>`
+    : `<div class="product-img-wrap ${acc.bgClass || 'bg-gradient-to-br from-blue-50 to-blue-100'}">
+        <i class="fa-solid fa-shirt shirt-img-icon" style="color:${acc.iconColor}"></i>
+        ${allEsgotado
+          ? '<span class="product-badge sold-out">Esgotado</span>'
+          : '<span class="product-badge">Em estoque</span>'}
+      </div>`;
+
+  const precoSection = isBrasil
+    ? `<div class="preco-promo mb-3">
+        <span class="preco-atual">${precoFmt}</span>
+        ${promoFmt ? `<span class="preco-badge">3+ un: ${promoFmt}</span>` : ''}
+      </div>`
+    : `<p class="font-display font-black text-2xl mb-3" style="color: var(--brand-navy);">${precoFmt}</p>`;
+
+  return `
+    <div class="product-card animate-enter" id="card-${p.id}">
+      ${imgSection}
+      <div class="p-4">
+        ${isBrasil ? `
+        <div class="flex items-center gap-2 mb-1">
+          <span class="color-swatch">
+            <span class="color-dot ${p.cor}"></span>${p.cor === 'amarela' ? 'Amarela' : 'Azul'}
+          </span>
+          <span class="gender-badge">
+            <i class="fa-solid fa-${p.genero === 'Feminino' ? 'venus' : 'mars'} text-[9px]"></i>${p.genero}
+          </span>
+        </div>` : `
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+          ${p.category === 'camisa' ? 'Camisa Esportiva' : 'Material Esportivo'}
+        </p>`}
+        <h3 class="font-display font-black text-lg leading-tight uppercase tracking-tight mb-1">${escHtml(p.nome)}</h3>
+        ${precoSection}
+        ${hasSizes ? `
+        <div class="mb-4">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Tamanho</p>
+          <div class="flex flex-wrap gap-1.5">${sizesHTML}</div>
+        </div>` : ''}
+        <button
+          id="btn-${p.id}"
+          onclick="addToCart('${p.id}')"
+          class="btn-add-cart"
+          ${allEsgotado ? 'disabled' : ''}>
+          ${allEsgotado
+            ? '<i class="fa-solid fa-ban"></i> Esgotado'
+            : '<i class="fa-solid fa-bag-shopping"></i> Adicionar ao carrinho'}
+        </button>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// SELEÇÃO DE TAMANHO
+// ══════════════════════════════════════════════════════════════
+function selectSize(productId, tamanho) {
+  selectedSizes[productId] = tamanho;
+  const product = allProducts.find(p => p.id === productId);
+  if (!product) return;
+  product.sizes.forEach(s => {
+    const btn = document.getElementById(`sz-${productId}-${s.tamanho}`);
+    if (btn) btn.classList.toggle('active', s.tamanho === tamanho);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// FILTROS
+// ══════════════════════════════════════════════════════════════
+function setFilter(filter, el) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+  el.classList.add('active');
+  filteredProducts = filter === 'todos'
+    ? [...allProducts]
+    : allProducts.filter(p => p.category === filter);
+  const grid = document.getElementById('product-grid');
+  grid.classList.remove('hidden');
+  renderProductGrid(filteredProducts);
+  document.getElementById('product-count').textContent =
+    `${filteredProducts.length} produto${filteredProducts.length !== 1 ? 's' : ''} encontrado${filteredProducts.length !== 1 ? 's' : ''}`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// CARRINHO + BULK PRICING
+// ══════════════════════════════════════════════════════════════
+function totalQtyNoCarrinho() {
+  return cart.reduce((sum, item) => sum + item.qty, 0);
+}
+
+function precoEfetivo(item) {
+  // Aplica preço de promoção se tem 3 ou mais itens no total
+  if (item.promoPreco && totalQtyNoCarrinho() >= 3) return item.promoPreco;
+  return item.preco;
+}
+
+function cartTotal() {
+  const total3plus = totalQtyNoCarrinho() >= 3;
+  return cart.reduce((sum, item) => {
+    const price = (item.promoPreco && total3plus) ? item.promoPreco : item.preco;
+    return sum + price * item.qty;
+  }, 0);
+}
+
+function cartSubtotalSemDesconto() {
+  return cart.reduce((sum, item) => sum + item.preco * item.qty, 0);
+}
+
+function addToCart(productId) {
+  const product = allProducts.find(p => p.id === productId);
+  if (!product) return;
+
+  const tamanho = selectedSizes[productId];
+  if (product.sizes.length > 0 && !tamanho) {
+    showToast('Selecione um tamanho', 'warning');
+    return;
+  }
+
+  const sizeInfo = product.sizes.find(s => s.tamanho === tamanho);
+  if (sizeInfo && sizeInfo.estoque === 0) {
+    showToast('Tamanho esgotado', 'error');
+    return;
+  }
+
+  const key      = `${productId}-${tamanho || 'unico'}`;
+  const existing = cart.find(item => item.key === key);
+
+  if (existing) {
+    const maxQty = sizeInfo ? sizeInfo.estoque : 99;
+    if (existing.qty >= maxQty) { showToast('Estoque insuficiente', 'error'); return; }
+    existing.qty++;
+  } else {
+    cart.push({
+      key,
+      productId,
+      nome:      product.nome,
+      tamanho:   tamanho || 'Único',
+      preco:     product.preco,
+      promoPreco:product.promoPreco || null,
+      qty:       1,
+      cor:       product.cor || null,
+    });
+  }
+
+  updateCartUI();
+
+  const totalNow = totalQtyNoCarrinho();
+  if (totalNow === 3 && cart.some(i => i.promoPreco)) {
+    showToast('🎉 Desconto 3+ ativado! R$189,90/camisa', 'success');
+  } else {
+    showToast(`${product.nome} adicionado!`, 'success');
+  }
+}
+
+function removeFromCart(key) {
+  cart = cart.filter(item => item.key !== key);
+  updateCartUI();
+  renderCartItems();
+}
+
+function changeQty(key, delta) {
+  const item = cart.find(i => i.key === key);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  updateCartUI();
+  renderCartItems();
+}
+
+function updateCartUI() {
+  const total = cart.reduce((sum, i) => sum + i.qty, 0);
+  const countEl = document.getElementById('cart-count');
+  const badgeEl = document.getElementById('cart-badge');
+
+  if (total > 0) {
+    countEl.textContent = total;
+    countEl.classList.remove('hidden');
+    badgeEl.textContent = total;
+    badgeEl.classList.remove('hidden');
+  } else {
+    countEl.classList.add('hidden');
+    badgeEl.classList.add('hidden');
+  }
+
+  const subtotalSem = cartSubtotalSemDesconto();
+  const totalCom    = cartTotal();
+  const desconto    = subtotalSem - totalCom;
+  const has3plus    = totalQtyNoCarrinho() >= 3 && desconto > 0;
+
+  document.getElementById('cart-subtotal').textContent = formatCurrency(subtotalSem);
+  document.getElementById('cart-total').textContent    = formatCurrency(totalCom);
+
+  const discountRow = document.getElementById('cart-discount-row');
+  const discountVal = document.getElementById('cart-discount-val');
+  if (has3plus) {
+    discountRow.classList.remove('hidden');
+    discountVal.textContent = `-${formatCurrency(desconto)}`;
+  } else {
+    discountRow.classList.add('hidden');
+  }
+
+  // Banner promo
+  const banner = document.getElementById('cart-promo-banner');
+  if (has3plus) banner.classList.add('show');
+  else           banner.classList.remove('show');
+}
+
+function renderCartItems() {
+  const listEl  = document.getElementById('cart-items-list');
+  const emptyEl = document.getElementById('cart-empty');
+  const footerEl= document.getElementById('cart-footer');
+
+  if (!cart.length) {
+    listEl.classList.add('hidden');
+    emptyEl.classList.remove('hidden');
+    footerEl.classList.add('hidden');
+    return;
+  }
+
+  emptyEl.classList.add('hidden');
+  listEl.classList.remove('hidden');
+  footerEl.classList.remove('hidden');
+
+  const total3plus = totalQtyNoCarrinho() >= 3;
+
+  listEl.innerHTML = cart.map(item => {
+    const iconClass = item.cor === 'amarela' ? 'amarela' : item.cor === 'azul' ? 'azul' : 'default';
+    const icon      = item.cor === 'amarela' ? '🟡' : item.cor === 'azul' ? '🔵' : '👕';
+    const precoUnit = (item.promoPreco && total3plus) ? item.promoPreco : item.preco;
+    const isDesc    = item.promoPreco && total3plus && item.promoPreco < item.preco;
+    return `
+      <div class="cart-item-row">
+        <div class="cart-item-icon ${iconClass}">${icon}</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-sm leading-tight">${escHtml(item.nome)}</p>
+          <p class="text-gray-400 text-xs mt-0.5">${escHtml(item.tamanho)}</p>
+          ${isDesc ? `<p class="text-green-600 text-[10px] font-bold uppercase mt-0.5">Desconto 3+</p>` : ''}
+          <p class="font-display font-black text-base mt-0.5">${formatCurrency(precoUnit)}</p>
+        </div>
+        <div class="flex flex-col items-end gap-2">
+          <button onclick="removeFromCart('${item.key}')" class="text-gray-300 hover:text-red-500 transition-colors text-xs">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+          <div class="flex items-center gap-1">
+            <button class="qty-btn" onclick="changeQty('${item.key}', -1)">−</button>
+            <span class="w-6 text-center font-bold text-sm">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty('${item.key}', 1)">+</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ABRIR / FECHAR CARRINHO
+// ══════════════════════════════════════════════════════════════
+function openCart() {
+  renderCartItems();
+  document.getElementById('cart-overlay').classList.add('open');
+  document.getElementById('cart-sidebar').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cart-sidebar').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ══════════════════════════════════════════════════════════════
+// CHECKOUT
+// ══════════════════════════════════════════════════════════════
+function openCheckout() {
+  if (!cart.length) { showToast('Carrinho vazio', 'warning'); return; }
+  closeCart();
+
+  const nome  = document.getElementById('input-nome').value;
+  const whats = document.getElementById('input-whats').value;
+  const end   = document.getElementById('input-endereco').value;
+  if (nome)  document.getElementById('checkout-nome').value     = nome;
+  if (whats) document.getElementById('checkout-whats').value    = whats;
+  if (end)   document.getElementById('checkout-endereco').value = end;
+
+  renderCheckoutSummary();
+  document.getElementById('checkout-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderCheckoutSummary() {
+  const summaryEl   = document.getElementById('checkout-summary');
+  const total3plus  = totalQtyNoCarrinho() >= 3;
+  const subtotalSem = cartSubtotalSemDesconto();
+  const totalCom    = cartTotal();
+  const desconto    = subtotalSem - totalCom;
+
+  summaryEl.innerHTML = cart.map(item => {
+    const precoUnit = (item.promoPreco && total3plus) ? item.promoPreco : item.preco;
+    return `
+      <div class="flex justify-between items-center text-sm">
+        <div>
+          <span class="font-bold">${escHtml(item.nome)}</span>
+          <span class="text-gray-400"> · ${escHtml(item.tamanho)} · ${item.qty}x</span>
+        </div>
+        <span class="font-bold">${formatCurrency(precoUnit * item.qty)}</span>
+      </div>`;
+  }).join('');
+
+  const discountRow = document.getElementById('checkout-discount-row');
+  const discountVal = document.getElementById('checkout-discount-val');
+  if (desconto > 0) {
+    discountRow.classList.remove('hidden');
+    discountVal.textContent = `-${formatCurrency(desconto)}`;
+  } else {
+    discountRow.classList.add('hidden');
+  }
+
+  document.getElementById('checkout-total').textContent = formatCurrency(totalCom);
+}
+
+function selectPayment(method) {
+  paymentMethod = method;
+  ['pix','cartao','dinheiro'].forEach(m => {
+    document.getElementById(`pay-${m}`).classList.toggle('active', m === method);
+  });
+}
+
+function finalizarPedido() {
+  const nome     = document.getElementById('checkout-nome').value.trim();
+  const whats    = document.getElementById('checkout-whats').value.trim();
+  const endereco = document.getElementById('checkout-endereco').value.trim();
+
+  if (!nome)  { showToast('Informe seu nome completo', 'error'); document.getElementById('checkout-nome').focus(); return; }
+  if (!whats) { showToast('Informe seu WhatsApp', 'error'); document.getElementById('checkout-whats').focus(); return; }
+
+  const payLabel   = { pix:'Pix', cartao:'Cartão', dinheiro:'Dinheiro' }[paymentMethod];
+  const dataHora   = new Date().toLocaleString('pt-BR');
+  const total3plus = totalQtyNoCarrinho() >= 3;
+  const totalCom   = cartTotal();
+  const subtotalSem= cartSubtotalSemDesconto();
+  const desconto   = subtotalSem - totalCom;
+
+  let msg = `🛍️ *NOVO PEDIDO — djota.sports*\n`;
+  msg += `─────────────────────────\n`;
+  msg += `👤 *Cliente:* ${nome}\n`;
+  msg += `📱 *WhatsApp:* ${whats}\n`;
+  if (endereco) msg += `📍 *Endereço:* ${endereco}\n`;
+  msg += `📅 *Data:* ${dataHora}\n`;
+  msg += `─────────────────────────\n`;
+  msg += `🛒 *ITENS DO PEDIDO:*\n\n`;
+
+  cart.forEach((item, i) => {
+    const precoUnit = (item.promoPreco && total3plus) ? item.promoPreco : item.preco;
+    msg += `${i+1}. ${item.nome}\n`;
+    msg += `   Tamanho: ${item.tamanho} | Qtd: ${item.qty}x | ${formatCurrency(precoUnit)} un.\n`;
+    msg += `   Subtotal: ${formatCurrency(precoUnit * item.qty)}\n\n`;
+  });
+
+  msg += `─────────────────────────\n`;
+  if (desconto > 0) msg += `🏷️ *Desconto 3+ unidades: -${formatCurrency(desconto)}*\n`;
+  msg += `💰 *TOTAL: ${formatCurrency(totalCom)}*\n`;
+  msg += `💳 *Pagamento:* ${payLabel}\n`;
+  msg += `─────────────────────────\n`;
+  msg += `✅ Aguardo confirmação para separar o pedido!`;
+
+  const encoded = encodeURIComponent(msg);
+  window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
+
+  cart = [];
+  updateCartUI();
+  closeCheckout();
+  document.getElementById('success-modal').classList.add('open');
+}
+
+function closeSuccess() {
+  document.getElementById('success-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  switchTab('catalog');
+}
+
+// ══════════════════════════════════════════════════════════════
+// SELLER MODAL (acesso ao dashboard)
+// ══════════════════════════════════════════════════════════════
+function abrirSellerModal() {
+  document.getElementById('seller-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharSellerModal() {
+  document.getElementById('seller-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function irParaDashboard() {
+  window.location.href = CONFIG.DASHBOARD_URL;
+}
+
+// Fechar modal ao clicar fora
+document.getElementById('seller-modal').addEventListener('click', function(e) {
+  if (e.target === this) fecharSellerModal();
+});
+
+// ══════════════════════════════════════════════════════════════
+// NAVEGAÇÃO ENTRE SEÇÕES
+// ══════════════════════════════════════════════════════════════
+function switchTab(tab) {
+  document.getElementById('section-catalog').classList.toggle('active', tab === 'catalog');
+  document.getElementById('section-perfil').classList.toggle('active', tab === 'perfil');
+  document.getElementById('hero-section').style.display = tab === 'catalog' ? '' : 'none';
+
+  document.querySelectorAll('.nav-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tab);
+  });
+
+  const navy = getComputedStyle(document.documentElement).getPropertyValue('--brand-navy').trim() || '#0d1e36';
+  ['catalog','perfil'].forEach(t => {
+    const el = document.getElementById(`mob-tab-${t}`);
+    if (!el) return;
+    if (t === tab) { el.style.background = navy; el.style.color = '#fff'; }
+    else           { el.style.background = ''; el.style.color = '#888'; }
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════════════════════
+// PERFIL
+// ══════════════════════════════════════════════════════════════
+function updateProfile() {
+  const nome   = document.getElementById('input-nome').value;
+  const cidade = document.getElementById('input-cidade').value;
+  document.getElementById('profile-name').textContent = nome   || 'Visitante';
+  document.getElementById('profile-city').textContent = cidade || '—';
+}
+
+function saveProfile() {
+  const nome = document.getElementById('input-nome').value.trim();
+  if (!nome) { showToast('Informe seu nome', 'error'); return; }
+  localStorage.setItem('djota_profile', JSON.stringify({
+    nome,
+    whats:    document.getElementById('input-whats').value,
+    cidade:   document.getElementById('input-cidade').value,
+    endereco: document.getElementById('input-endereco').value,
+  }));
+  showToast('Dados salvos com sucesso!', 'success');
+}
+
+function loadProfile() {
+  try {
+    const saved = localStorage.getItem('djota_profile');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    if (data.nome)     document.getElementById('input-nome').value     = data.nome;
+    if (data.whats)    document.getElementById('input-whats').value    = data.whats;
+    if (data.cidade)   document.getElementById('input-cidade').value   = data.cidade;
+    if (data.endereco) document.getElementById('input-endereco').value = data.endereco;
+    updateProfile();
+  } catch(e) { /* ignorar */ }
+}
+
+// ══════════════════════════════════════════════════════════════
+// UTILITÁRIOS
+// ══════════════════════════════════════════════════════════════
+function formatCurrency(value) {
+  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function escHtml(str) {
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const toast  = document.getElementById('toast');
+  const iconEl = document.getElementById('toast-icon');
+  const msgEl  = document.getElementById('toast-msg');
+  const icons  = { success: 'fa-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
+  const colors = { success: '#0d1e36', error: '#dc2626', warning: '#d97706' };
+
+  iconEl.className = `fa-solid ${icons[type] || icons.success}`;
+  toast.style.background = colors[type] || colors.success;
+  msgEl.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  loadProfile();
+  loadProducts();
+});
+</script>
 </body>
 </html>
