@@ -198,7 +198,7 @@ window.onload = async function carregarDadosDashboard() {
     applyStoredProfile();
 
     try {
-        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMzFzlSDwUT0Q9s-rnZiRWW0VIz5W09lz6qm_vE_nCIybGKQ9UTXbkA_F9deydKymZ4_5dzcCixJPI/pub?output=csv';
+        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMzFzlSDwUT0Q9s-rnZiRWW0VIz5W09lz6qm_vE_nCIybGKQ9UTXbkA_F9deydKymZ4_5dzcCixJPI/pub?output=csvhttps://docs.google.com/spreadsheets/d/1Bf2g-DqZ_2Bf8zFAL3GvAWhVco7X6m55H8wV8bTz5Yk/gviz/tq?tqx=out:csv&sheet=Dados_Dashboard';
         const resposta = await fetch(url);
         const textoCSV = await resposta.text();
         
